@@ -1,58 +1,599 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin | Quản lý sự kiện Free Fire</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ADMIN • QUẢN TRỊ SỰ KIỆN</title>
 <style>
-:root{color-scheme:dark;--bg:#080d19;--panel:#111b2e;--line:#2b3b55;--gold:#ffd166;--muted:#9eacc2;--red:#ff6262}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#182746,#080d19 65%);font:15px system-ui,-apple-system,Segoe UI,sans-serif;color:#f5f7fb;min-height:100vh}
-main{max-width:1050px;margin:auto;padding:24px 16px 60px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px}h1{font-size:clamp(24px,4vw,36px);margin:0;color:var(--gold)}h2{font-size:18px;margin:0 0 14px}.sub{color:var(--muted);margin:6px 0 0}.panel{background:#111b2eeb;border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 16px 40px #0003}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-weight:650;color:#dce5f4}input,textarea{width:100%;background:#091222;border:1px solid #354661;border-radius:9px;padding:11px 12px;color:white;font:inherit;outline:none}input:focus,textarea:focus{border-color:var(--gold)}textarea{min-height:76px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.btn{border:1px solid #53647d;border-radius:10px;padding:10px 14px;background:#1b2b45;color:#fff;font-weight:700;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#ffdf83,#e8a92b);border-color:#ffdc7b;color:#241804}.btn.danger{border-color:#85454d;background:#3b1b25;color:#ffdce0}.btn:disabled{opacity:.5;cursor:not-allowed}.event-list{display:flex;gap:8px;flex-wrap:wrap}.event-pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#0b1425}.event-pill button{cursor:pointer;color:#fff;background:transparent;border:0}.event-pill .pick{font-weight:700}.status{padding:11px 13px;border-radius:10px;background:#0b1425;color:#c4d0e2;white-space:pre-wrap;overflow-wrap:anywhere}.status.ok{border:1px solid #28694c;color:#b7f3d1}.status.err{border:1px solid #80404a;color:#ffd0d4}.hint{font-size:13px;color:var(--muted);line-height:1.55}.preview{display:flex;gap:12px;align-items:center;margin-top:8px}.preview img{width:110px;height:66px;object-fit:contain;background:#060a12;border:1px solid var(--line);border-radius:8px}.preview span{font-size:12px;color:var(--muted);overflow-wrap:anywhere}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.badge{color:var(--gold);font-size:12px;letter-spacing:1px;font-weight:800}@media(max-width:650px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:15px}}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --line:rgba(255,255,255,.10);
+  --gold:#ffd166;
+  --gold2:#ffb347;
+  --txt:#e9eefb;
+  --muted:#8b96b4;
+  --danger:#ff5d5d;
+}
+html,body{min-height:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--txt);
+  background:
+    radial-gradient(900px 520px at 8% -12%,rgba(255,190,80,.14),transparent 60%),
+    radial-gradient(900px 520px at 96% 4%,rgba(90,130,255,.15),transparent 60%),
+    #070b16;
+  background-attachment:fixed;
+  padding:clamp(12px,2.5vw,26px);
+  padding-bottom:60px;
+}
+/* ===== TOP ===== */
+.top{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+h1{
+  font-size:clamp(18px,2.6vw,26px);letter-spacing:2px;font-weight:800;
+  background:linear-gradient(135deg,#fff 0%,#ffe28a 45%,#ffb347 80%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 12px rgba(255,180,0,.35));
+}
+.sub{font-size:12.5px;color:var(--muted);letter-spacing:.6px;margin-top:5px}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.btn{
+  font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.6px;
+  padding:9px 14px;border-radius:10px;cursor:pointer;
+  color:var(--txt);background:rgba(255,255,255,.06);
+  border:1px solid var(--line);transition:.2s ease;
+}
+.btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn-gold{background:linear-gradient(135deg,#ffd166,#ffb347);color:#241300;border-color:transparent;box-shadow:0 6px 18px rgba(255,180,60,.28)}
+.btn-gold:hover{box-shadow:0 8px 24px rgba(255,180,60,.42)}
+.btn-danger{color:#ffb4b4;border-color:rgba(255,93,93,.4);background:rgba(255,93,93,.1)}
+.btn-danger:hover{background:rgba(255,93,93,.2)}
+/* ===== CARD ===== */
+.card{
+  position:relative;
+  background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.02));
+  border:1px solid var(--line);border-radius:16px;
+  padding:14px 16px 16px;margin-bottom:14px;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:0 12px 34px rgba(0,0,0,.35);
+  animation:fade .25s ease;
+}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.badge{
+  font-size:11px;font-weight:800;letter-spacing:1px;padding:5px 9px;border-radius:8px;
+  color:#241300;background:linear-gradient(135deg,#ffd166,#ffb347);flex-shrink:0;
+}
+.name-input{
+  flex:1;min-width:160px;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.5px;
+  color:#fff;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;outline:none;transition:.18s;
+}
+.name-input:focus{border-color:rgba(255,209,102,.6);box-shadow:0 0 0 3px rgba(255,209,102,.12)}
+.acts{display:flex;gap:6px}
+.mini{
+  font-family:inherit;font-size:12px;font-weight:700;padding:7px 10px;border-radius:8px;cursor:pointer;
+  color:var(--txt);background:rgba(255,255,255,.06);border:1px solid var(--line);transition:.18s;
+}
+.mini:hover{background:rgba(255,255,255,.14)}
+.mini.del{color:#ffb4b4;border-color:rgba(255,93,93,.35);background:rgba(255,93,93,.1)}
+.mini.del:hover{background:rgba(255,93,93,.22)}
+/* ===== FIELD ===== */
+.lbl{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.row{margin-bottom:12px}
+.txt{
+  width:100%;font-family:inherit;font-size:13px;color:#fff;
+  background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;outline:none;transition:.18s;
+}
+.txt:focus{border-color:rgba(255,209,102,.6);box-shadow:0 0 0 3px rgba(255,209,102,.12)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.input-row{display:flex;gap:8px}
+.input-row .txt{flex:1;min-width:0}
+.preview{
+  margin-top:8px;height:96px;border-radius:10px;
+  border:1px dashed rgba(255,255,255,.16);
+  background:rgba(0,0,0,.28);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.preview img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.preview:not(.has)::after{content:"Chưa có ảnh";font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px}
+.preview:not(.has) img{display:none}
+/* ===== BANNER BOX ===== */
+.banner-box{margin-top:8px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+.banner-box summary{
+  cursor:pointer;list-style:none;font-size:12px;font-weight:800;letter-spacing:1.4px;
+  color:var(--gold);padding:6px 0;user-select:none;
+}
+.banner-box summary::-webkit-details-marker{display:none}
+.banner-box summary::before{content:"▸";display:inline-block;margin-right:8px;transition:.2s}
+.banner-box[open] summary::before{transform:rotate(90deg)}
+.banner-box[open] summary{margin-bottom:10px}
+/* ===== ADD CARD ===== */
+.add-card{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:18px;border-radius:16px;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:800;letter-spacing:1.5px;
+  color:var(--gold);background:rgba(255,209,102,.06);
+  border:2px dashed rgba(255,209,102,.35);transition:.22s;
+}
+.add-card:hover{background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.7);transform:translateY(-1px)}
+.add-card .plus{font-size:22px;line-height:1}
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
+  padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.5px;
+  background:rgba(20,26,44,.96);border:1px solid rgba(255,209,102,.45);
+  color:#ffe28a;box-shadow:0 14px 40px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;transition:.28s ease;z-index:9999;max-width:92vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* ===== MODAL ===== */
+.modal{
+  position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;transition:.25s;
+}
+.modal.show{opacity:1;visibility:visible}
+.modal-box{
+  width:min(760px,100%);background:#0e1424;border:1px solid var(--line);border-radius:16px;
+  padding:20px;box-shadow:0 30px 70px rgba(0,0,0,.7);
+}
+.modal-box h3{font-size:15px;letter-spacing:1.5px;color:var(--gold);margin-bottom:8px}
+.modal-box p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+#linkOut{
+  width:100%;height:130px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px;color:#cfe3ff;background:rgba(0,0,0,.4);
+  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;word-break:break-all;
+}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+@media(max-width:520px){
+  .top{align-items:flex-start}
+  .tools{width:100%}
+  .btn{flex:1 1 auto;text-align:center}
+}
 </style>
 </head>
-<body><main>
-<header class="top"><div><div class="badge">FREE FIRE · CONTROL PANEL</div><h1>Quản lý sự kiện</h1><p class="sub">Thêm sự kiện, chỉnh sửa nội dung và URL ảnh được hiển thị trên trang User.</p></div><a class="btn" href="https://azerst-freefire.vercel.app/" target="_blank" rel="noopener">Mở trang User ↗</a></header>
-<section class="panel"><h2>① Kết nối Supabase</h2><div class="grid">
-<div class="field"><label for="supabaseUrl">Project URL</label><input id="supabaseUrl" placeholder="https://xxxx.supabase.co" autocomplete="url"></div>
-<div class="field"><label for="supabaseKey">Publishable / anon key</label><input id="supabaseKey" placeholder="sb_publishable_... hoặc anon key" autocomplete="off"></div>
-</div><p class="hint">Chỉ dùng publishable/anon key ở trình duyệt, không dùng service_role/secret key. Cấu hình được lưu trong trình duyệt này.</p><div class="actions"><button class="btn primary" id="connectBtn">Kết nối / tải dữ liệu</button><button class="btn" id="disconnectBtn">Xóa cấu hình trên máy này</button></div></section>
-<section class="panel"><h2>② Danh sách sự kiện</h2><div class="event-list" id="eventList"></div><div class="actions"><button class="btn primary" id="addBtn">＋ Thêm sự kiện</button><button class="btn" id="reloadBtn">Tải lại từ Supabase</button></div><p class="hint">Chọn một sự kiện để sửa. Xóa là thao tác trên dữ liệu trực tuyến và không thể hoàn tác nếu chưa sao lưu.</p></section>
-<section class="panel"><h2>③ Chỉnh sửa sự kiện</h2><div class="grid">
-<div class="field"><label for="eventName">Tên nút sự kiện</label><input id="eventName" maxlength="80" placeholder="Sự kiện 1"></div>
-<div class="field"><label for="eventTitle">Tiêu đề (TITLE SỰ KIỆN)</label><input id="eventTitle" maxlength="120" placeholder="MÀN TRÌNH DIỄN KINH DỊ"></div>
-<div class="field full"><label for="eventDescription">Mô tả</label><textarea id="eventDescription" maxlength="1000" placeholder="Mô tả ngắn về sự kiện"></textarea></div>
-<div class="field full"><label for="titleUrl">URL ảnh TITLE SỰ KIỆN (logo/tiêu đề)</label><input id="titleUrl" type="url" placeholder="https://..."><div class="preview"><img id="titlePreview" alt="Xem trước ảnh title"><span id="titlePreviewText">Xem trước ảnh title</span></div></div>
-<div class="field full"><label for="tabUrl">URL ảnh TAB SỰ KIỆN</label><input id="tabUrl" type="url" placeholder="https://..."><div class="preview"><img id="tabPreview" alt="Xem trước ảnh tab"><span id="tabPreviewText">Xem trước ảnh tab</span></div></div>
-<div class="field full"><label for="backgroundUrl">URL ảnh BACKGROUND SỰ KIỆN</label><input id="backgroundUrl" type="url" placeholder="https://..."><div class="preview"><img id="backgroundPreview" alt="Xem trước ảnh nền"><span id="backgroundPreviewText">Xem trước ảnh nền</span></div></div>
-</div><div class="actions"><button class="btn primary" id="saveBtn">Lưu sự kiện</button><button class="btn danger" id="deleteBtn">Xóa sự kiện đang chọn</button><button class="btn" id="clearBtn">Làm trống biểu mẫu</button></div></section>
-<section class="panel"><h2>④ Trạng thái</h2><div class="status" id="status" role="status" aria-live="polite">Chưa kết nối. Hãy nhập Project URL và publishable/anon key rồi nhấn “Kết nối / tải dữ liệu”.</div></section>
-<p class="hint">Lưu ý bảo mật: trang Admin hiện không có đăng nhập theo yêu cầu. Bất kỳ ai biết URL và có thể truy cập trang đều có thể thử chỉnh sửa dữ liệu nếu chính sách RLS cho phép. Với website công khai, nên bổ sung xác thực trước khi dùng thật.</p>
-</main>
+<body>
+
+<div class="top">
+  <div>
+    <h1>QUẢN TRỊ SỰ KIỆN</h1>
+    <p class="sub" id="subDesc">Tự động thêm • 0 sự kiện</p>
+  </div>
+  <div class="tools">
+    <button class="btn btn-gold" id="btnAdd">+ Tạo sự kiện</button>
+    <button class="btn" id="btnLink">🔗 Tạo Link User</button>
+    <button class="btn" id="btnCopy">📋 Copy JSON</button>
+    <button class="btn" id="btnExport">⬇ Xuất data.json</button>
+    <button class="btn" id="btnImport">⬆ Nhập JSON</button>
+    <button class="btn" id="btnPreview">👁 Xem trước</button>
+    <button class="btn btn-danger" id="btnReset">↺ Đặt lại</button>
+    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+  </div>
+</div>
+
+<main id="list"></main>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>TẠO LINK USER</h3>
+    <p>Dữ liệu được nhúng trực tiếp trong link. Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
+    <textarea id="linkOut" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-gold" id="copyLink">Sao chép</button>
+      <button class="btn" id="openLink">Mở link</button>
+      <button class="btn" id="closeModal">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const DEFAULTS=[
-{id:"1",name:"Sự kiện 1",title:"MÀN TRÌNH DIỄN KINH DỊ",description:"",title_url:"https://azerst-image-vn.vercel.app/images/8F9d2wz2w.png",tab_url:"https://azerst-image-vn.vercel.app/images/wRZwa1Bqv.png",background_url:"https://azerst-image-vn.vercel.app/images/orGmr7jOS.png",sort_order:1},
-{id:"2",name:"Sự kiện 2",title:"MÓNG VUỐT TAI HOẠ",description:"",title_url:"https://azerst-image-vn.vercel.app/images/m4jwa7iMn.png",tab_url:"https://azerst-image-vn.vercel.app/images/Xl6yeAKFU.png",background_url:"https://azerst-image-vn.vercel.app/images/QOoBqwG3R.png",sort_order:2},
-{id:"3",name:"Sự kiện 3",title:"HÀNH ĐỘNG HALLOWEEN",description:"",title_url:"https://azerst-image-vn.vercel.app/images/mw5xbjnMj.png",tab_url:"https://azerst-image-vn.vercel.app/images/GsqjGtxDt.png",background_url:"https://azerst-image-vn.vercel.app/images/rGM5HmhEG.png",sort_order:3}
-];
-const $=id=>document.getElementById(id);
-let rows=[],selected=null,apiBase="",apiKey="";
-function say(msg,type=""){const el=$("status");el.textContent=msg;el.className="status "+type}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function config(){apiBase=$("supabaseUrl").value.trim().replace(/\/+$/,"");apiKey=$("supabaseKey").value.trim();if(!/^https:\/\/[a-zA-Z0-9.-]+\.supabase\.co$/.test(apiBase))throw Error("Project URL không hợp lệ.");if(!apiKey)throw Error("Hãy nhập publishable/anon key.");localStorage.setItem("ffsb_url",apiBase);localStorage.setItem("ffsb_key",apiKey)}
-async function request(path,options={}){const r=await fetch(apiBase+"/rest/v1/"+path,{...options,headers:{"apikey":apiKey,"Authorization":"Bearer "+apiKey,"Content-Type":"application/json","Accept":"application/json",...(options.headers||{})}});const t=await r.text();if(!r.ok)throw Error("Supabase "+r.status+": "+t.slice(0,500));return t?JSON.parse(t):null}
-function normalize(r){return {id:String(r.id),name:r.name||"Sự kiện",title:r.title||"",description:r.description||"",title_url:r.title_url||"",tab_url:r.tab_url||"",background_url:r.background_url||"",sort_order:Number(r.sort_order)||0}}
-async function connect(){try{config();say("Đang kết nối Supabase…");await loadRows()}catch(e){say(e.message,"err")}}
-async function loadRows(){const data=await request("events?select=*&order=sort_order.asc,created_at.asc");rows=data.map(normalize);renderList();if(selected&&!rows.some(r=>r.id===selected))selected=null;if(!selected&&rows.length)selected=rows[0].id;fillForm();say(`Đã tải ${rows.length} sự kiện từ Supabase.`,"ok")}
-function renderList(){$("eventList").innerHTML=rows.map(r=>`<div class="event-pill"><button class="pick" data-pick="${esc(r.id)}">${esc(r.name)}</button><button aria-label="Chọn ${esc(r.name)}" data-pick="${esc(r.id)}">✎</button></div>`).join("")||'<span class="hint">Chưa có sự kiện. Nhấn “Thêm sự kiện”.</span>';document.querySelectorAll("[data-pick]").forEach(b=>b.addEventListener("click",()=>{selected=b.dataset.pick;fillForm();renderList()}))}
-function fillForm(){const r=rows.find(x=>x.id===selected);$("eventName").value=r?.name||"";$("eventTitle").value=r?.title||"";$("eventDescription").value=r?.description||"";$("titleUrl").value=r?.title_url||"";$("tabUrl").value=r?.tab_url||"";$("backgroundUrl").value=r?.background_url||"";preview("title",$("titleUrl").value);preview("tab",$("tabUrl").value);preview("background",$("backgroundUrl").value);$("deleteBtn").disabled=!r}
-function preview(which,url){const img=$(which+"Preview"),txt=$(which+"PreviewText");img.src=url||"";img.style.visibility=url?"visible":"hidden";txt.textContent=url||"Chưa có URL"}
-["titleUrl","tabUrl","backgroundUrl"].forEach((id,i)=>$(id).addEventListener("input",()=>preview(["title","tab","background"][i],$(id).value)))
-function clearForm(){selected=null;fillForm();renderList();$("eventName").focus()}
-function formData(){const data={name:$("eventName").value.trim(),title:$("eventTitle").value.trim(),description:$("eventDescription").value.trim(),title_url:$("titleUrl").value.trim(),tab_url:$("tabUrl").value.trim(),background_url:$("backgroundUrl").value.trim()};if(!data.name)throw Error("Hãy nhập tên sự kiện.");for(const k of ["title_url","tab_url","background_url"])if(data[k]&&!/^https?:\/\/\S+$/i.test(data[k]))throw Error("URL ảnh phải bắt đầu bằng http:// hoặc https://");return data}
-async function save(){try{if(!apiBase||!apiKey)config();const d=formData();if(selected&&rows.some(r=>r.id===selected)){await request("events?id=eq."+encodeURIComponent(selected),{method:"PATCH",headers:{"Prefer":"return=minimal"},body:JSON.stringify(d)});say("Đã cập nhật sự kiện.","ok")}else{const order=rows.reduce((m,r)=>Math.max(m,r.sort_order),0)+1;const created=await request("events",{method:"POST",headers:{"Prefer":"return=representation"},body:JSON.stringify({...d,sort_order:order})});if(!created?.length)throw Error("Không nhận được dữ liệu sau khi tạo.");selected=String(created[0].id);say("Đã tạo sự kiện mới.","ok")}await loadRows()}catch(e){say(e.message,"err")}}
-async function remove(){if(!selected)return;if(!confirm("Xóa sự kiện này khỏi Supabase?"))return;try{await request("events?id=eq."+encodeURIComponent(selected),{method:"DELETE",headers:{"Prefer":"return=minimal"}});selected=null;await loadRows();say("Đã xóa sự kiện.","ok")}catch(e){say(e.message,"err")}}
-$("connectBtn").addEventListener("click",connect);$("reloadBtn").addEventListener("click",connect);$("saveBtn").addEventListener("click",save);$("deleteBtn").addEventListener("click",remove);$("clearBtn").addEventListener("click",clearForm);
-$("addBtn").addEventListener("click",()=>{selected=null;fillForm();$("eventName").value="Sự kiện "+(rows.length+1);$("eventTitle").value="";$("eventDescription").value="";$("titleUrl").value="";$("tabUrl").value="";$("backgroundUrl").value="";preview("title","");preview("tab","");preview("background","");$("deleteBtn").disabled=true;$("eventName").focus()});
-$("disconnectBtn").addEventListener("click",()=>{localStorage.removeItem("ffsb_url");localStorage.removeItem("ffsb_key");$("supabaseUrl").value="";$("supabaseKey").value="";apiBase="";apiKey="";say("Đã xóa cấu hình Supabase được lưu trên trình duyệt này.")});
-$("supabaseUrl").value=localStorage.getItem("ffsb_url")||"";$("supabaseKey").value=localStorage.getItem("ffsb_key")||"";
-if($("supabaseUrl").value&&$("supabaseKey").value)connect();
-</script></body></html>
+(function () {
+  'use strict';
+
+  var LS_KEY   = 'tgmvn_ff_admin_v1';
+  var USER_URL = 'https://azerst-freefire.vercel.app/';
+
+  /* ================= DỮ LIỆU MẶC ĐỊNH ================= */
+  var DEFAULT_STATE = {
+    siteTitle: 'TAB SỰ KIỆN | Trang chủ',
+    footer: '© Azerst 2026 – All rights reserved',
+    events: [
+      {
+        id: '1', name: 'Sự kiện 1',
+        tag: 'MÀN TRÌNH DIỄN KINH DỊ',
+        logo: 'https://azerst-image-vn.vercel.app/images/8F9d2wz2w.png',
+        tab:  'https://azerst-image-vn.vercel.app/images/wRZwa1Bqv.png',
+        bg:   'https://azerst-image-vn.vercel.app/images/orGmr7jOS.png',
+        bannerLabel: 'TÀ LINH ĐỔ BỘ',
+        banners: {
+          '16-9':     'https://azerst-image-vn.vercel.app/images/eHDvjfDHK.jpg',
+          'portrait': 'https://azerst-image-vn.vercel.app/images/z1R4FBio5.png',
+          '256':      'https://azerst-image-vn.vercel.app/images/GQi503B4g.png',
+          '512':      'https://azerst-image-vn.vercel.app/images/UlyJpvmBm.png'
+        }
+      },
+      {
+        id: '2', name: 'Sự kiện 2',
+        tag: 'MÓNG VUỐT TAI HOẠ',
+        logo: 'https://azerst-image-vn.vercel.app/images/m4jwa7iMn.png',
+        tab:  'https://azerst-image-vn.vercel.app/images/Xl6yeAKFU.png',
+        bg:   'https://azerst-image-vn.vercel.app/images/QOoBqwG3R.png',
+        bannerLabel: 'MÀN TRÌNH DIỄN KINH DỊ',
+        banners: {
+          '16-9':     'https://azerst-image-vn.vercel.app/images/64SsEq3sh.jpg',
+          'portrait': 'https://azerst-image-vn.vercel.app/images/NkS5Uib75.png',
+          '256':      'https://azerst-image-vn.vercel.app/images/4q4A1mvDU.png',
+          '512':      'https://azerst-image-vn.vercel.app/images/dmbomVVfA.png'
+        }
+      },
+      {
+        id: '3', name: 'Sự kiện 3',
+        tag: 'HÀNH ĐỘNG HALLOWEEN',
+        logo: 'https://azerst-image-vn.vercel.app/images/mw5xbjnMj.png',
+        tab:  'https://azerst-image-vn.vercel.app/images/GsqjGtxDt.png',
+        bg:   'https://azerst-image-vn.vercel.app/images/rGM5HmhEG.png',
+        bannerLabel: 'MÓNG VUỐT TAI HỌA',
+        banners: {
+          '16-9':     'https://azerst-image-vn.vercel.app/images/hTbfK9XRk.png',
+          'portrait': 'https://azerst-image-vn.vercel.app/images/MrGWGnY3e.png',
+          '256':      'https://azerst-image-vn.vercel.app/images/9pWreeN5O.png',
+          '512':      'https://azerst-image-vn.vercel.app/images/UUOllEYiO.png'
+        }
+      }
+    ]
+  };
+
+  /* ================= HELPERS ================= */
+  var list    = document.getElementById('list');
+  var subDesc = document.getElementById('subDesc');
+  var toastEl = document.getElementById('toast');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  var toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+  }
+
+  function b64urlEncode(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); resolve(); }
+      catch (e) { reject(e); }
+      document.body.removeChild(ta);
+    });
+  }
+
+  /* ================= STATE ================= */
+  function normalize(d) {
+    d = d || {};
+    d.siteTitle = d.siteTitle || DEFAULT_STATE.siteTitle;
+    d.footer    = d.footer    || DEFAULT_STATE.footer;
+    d.events    = Array.isArray(d.events) ? d.events : [];
+    d.events = d.events.map(function (ev, i) {
+      ev = ev || {};
+      return {
+        id:          ev.id || uid(),
+        name:        ev.name || ('Sự kiện ' + (i + 1)),
+        tag:         ev.tag || '',
+        logo:        ev.logo || '',
+        tab:         ev.tab || '',
+        bg:          ev.bg || '',
+        bannerLabel: ev.bannerLabel || '',
+        banners: {
+          '16-9':     (ev.banners && ev.banners['16-9'])     || '',
+          'portrait': (ev.banners && ev.banners['portrait']) || '',
+          '256':      (ev.banners && ev.banners['256'])      || '',
+          '512':      (ev.banners && ev.banners['512'])      || ''
+        }
+      };
+    });
+    return d;
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        var d = JSON.parse(raw);
+        if (d && Array.isArray(d.events)) return normalize(d);
+      }
+    } catch (e) {}
+    return normalize(clone(DEFAULT_STATE));
+  }
+
+  var state = load();
+
+  var saveTimer = null;
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+    }, 180);
+  }
+
+  /* ================= RENDER ================= */
+  function urlField(field, label, value) {
+    value = value || '';
+    return '' +
+      '<div class="field">' +
+        '<label class="lbl">' + esc(label) + '</label>' +
+        '<div class="input-row">' +
+          '<input class="txt url" data-field="' + esc(field) + '" value="' + esc(value) + '" placeholder="https://...">' +
+          '<button type="button" class="mini" data-clear="' + esc(field) + '">Xóa</button>' +
+        '</div>' +
+        '<div class="preview' + (value ? ' has' : '') + '" data-preview="' + esc(field) + '">' +
+          '<img src="' + esc(value) + '" alt="" onerror="this.removeAttribute(\'src\')">' +
+        '</div>' +
+      '</div>';
+  }
+
+  function cardHTML(ev, i) {
+    return '' +
+    '<section class="card" data-id="' + esc(ev.id) + '">' +
+      '<div class="card-head">' +
+        '<span class="badge">#' + (i + 1) + '</span>' +
+        '<input class="name-input" data-field="name" value="' + esc(ev.name) + '" placeholder="Tên sự kiện (hiện trên nút)">' +
+        '<div class="acts">' +
+          '<button type="button" class="mini" data-act="up" title="Lên">↑</button>' +
+          '<button type="button" class="mini" data-act="down" title="Xuống">↓</button>' +
+          '<button type="button" class="mini del" data-act="del" title="Xóa">✕ Xóa</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="row">' +
+        '<label class="lbl">Tag chữ đỏ (hiển thị phía trên)</label>' +
+        '<input class="txt" data-field="tag" value="' + esc(ev.tag) + '" placeholder="VD: MÀN TRÌNH DIỄN KINH DỊ">' +
+      '</div>' +
+
+      '<div class="grid">' +
+        urlField('logo', 'TITLE SỰ KIỆN (logo)', ev.logo) +
+        urlField('tab',  'TAB SỰ KIỆN', ev.tab) +
+        urlField('bg',   'BACKGROUND SỰ KIỆN', ev.bg) +
+      '</div>' +
+
+      '<details class="banner-box">' +
+        '<summary>BANNER SỰ KIỆN (trang BANNER)</summary>' +
+        '<div class="row">' +
+          '<label class="lbl">Tiêu đề banner</label>' +
+          '<input class="txt" data-field="bannerLabel" value="' + esc(ev.bannerLabel) + '" placeholder="VD: TÀ LINH ĐỔ BỘ">' +
+        '</div>' +
+        '<div class="grid">' +
+          urlField('banner.16-9',     'Banner 16:9',     ev.banners['16-9']) +
+          urlField('banner.portrait', 'Banner 436×606',  ev.banners['portrait']) +
+          urlField('banner.256',      'Banner 256×107',  ev.banners['256']) +
+          urlField('banner.512',      'Banner 512×182',  ev.banners['512']) +
+        '</div>' +
+      '</details>' +
+    '</section>';
+  }
+
+  function render() {
+    var html = '';
+    state.events.forEach(function (ev, i) { html += cardHTML(ev, i); });
+    html += '<button type="button" class="add-card" id="addCard"><span class="plus">+</span> TẠO DANH SÁCH SỰ KIỆN</button>';
+    list.innerHTML = html;
+    updateDesc();
+  }
+
+  function updateDesc() {
+    subDesc.textContent = 'Tự động thêm • ' + state.events.length + ' sự kiện • Lưu tự động';
+  }
+
+  /* ================= PREVIEW ================= */
+  function setPreview(container, url) {
+    if (!container) return;
+    var img = container.querySelector('img');
+    if (!img) return;
+    if (url) {
+      img.src = url;
+      container.classList.add('has');
+    } else {
+      img.removeAttribute('src');
+      container.classList.remove('has');
+    }
+  }
+
+  /* ================= EVENT DELEGATION ================= */
+  list.addEventListener('input', function (e) {
+    var el = e.target;
+    var card = el.closest('.card');
+    if (!card) return;
+    var ev = state.events.find(function (x) { return x.id === card.dataset.id; });
+    if (!ev) return;
+    var f = el.dataset.field;
+    if (!f) return;
+    var v = el.value;
+
+    if (f.indexOf('banner.') === 0) {
+      ev.banners[f.slice(7)] = v.trim();
+    } else {
+      ev[f] = v;
+    }
+
+    if (el.classList.contains('url')) {
+      setPreview(card.querySelector('[data-preview="' + f + '"]'), v.trim());
+    }
+    save();
+  });
+
+  list.addEventListener('click', function (e) {
+    /* Xóa link ảnh */
+    var clr = e.target.closest('[data-clear]');
+    if (clr) {
+      var card0 = clr.closest('.card');
+      var input = card0.querySelector('[data-field="' + clr.dataset.clear + '"]');
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      return;
+    }
+
+    /* Nút thêm sự kiện */
+    if (e.target.closest('#addCard')) { addEvent(); return; }
+
+    /* Hành động */
+    var act = e.target.closest('[data-act]');
+    if (!act) return;
+    var card = act.closest('.card');
+    if (!card) return;
+    var idx = state.events.findIndex(function (x) { return x.id === card.dataset.id; });
+    if (idx < 0) return;
+
+    var a = act.dataset.act;
+    if (a === 'up' && idx > 0) {
+      var t1 = state.events[idx - 1];
+      state.events[idx - 1] = state.events[idx];
+      state.events[idx] = t1;
+      save(); render();
+    } else if (a === 'down' && idx < state.events.length - 1) {
+      var t2 = state.events[idx + 1];
+      state.events[idx + 1] = state.events[idx];
+      state.events[idx] = t2;
+      save(); render();
+    } else if (a === 'del') {
+      if (state.events.length <= 1) { toast('Phải giữ lại ít nhất 1 sự kiện'); return; }
+      if (!confirm('Xóa "' + (state.events[idx].name || ('Sự kiện ' + (idx + 1))) + '" ?')) return;
+      state.events.splice(idx, 1);
+      save(); render(); toast('Đã xóa sự kiện');
+    }
+  });
+
+  function addEvent() {
+    var n = state.events.length + 1;
+    state.events.push({
+      id: uid(),
+      name: 'Sự kiện ' + n,
+      tag: '',
+      logo: '', tab: '', bg: '',
+      bannerLabel: '',
+      banners: { '16-9': '', 'portrait': '', '256': '', '512': '' }
+    });
+    save(); render();
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    toast('Đã thêm "Sự kiện ' + n + '"');
+  }
+
+  /* ================= TOOLBAR ================= */
+  document.getElementById('btnAdd').addEventListener('click', addEvent);
+
+  document.getElementById('btnCopy').addEventListener('click', function () {
+    copyText(JSON.stringify(state, null, 2))
+      .then(function () { toast('Đã copy JSON'); })
+      .catch(function () { toast('Không copy được, hãy dùng Xuất data.json'); });
+  });
+
+  document.getElementById('btnExport').addEventListener('click', function () {
+    var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'data.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1200);
+    toast('Đã xuất data.json — đưa file này vào repo User');
+  });
+
+  var fileInput = document.getElementById('fileInput');
+  document.getElementById('btnImport').addEventListener('click', function () { fileInput.click(); });
+  fileInput.addEventListener('change', function () {
+    var f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var d = JSON.parse(reader.result);
+        if (!d || !Array.isArray(d.events)) throw new Error('bad');
+        state = normalize(d);
+        save(); render();
+        toast('Đã nhập ' + state.events.length + ' sự kiện');
+      } catch (err) {
+        toast('File JSON không hợp lệ');
+      }
+    };
+    reader.readAsText(f);
+    fileInput.value = '';
+  });
+
+  /* ===== LINK USER ===== */
+  var modal   = document.getElementById('modal');
+  var linkOut = document.getElementById('linkOut');
+
+  function buildLink() {
+    return USER_URL + '#d=' + b64urlEncode(JSON.stringify(state));
+  }
+
+  document.getElementById('btnLink').addEventListener('click', function () {
+    linkOut.value = buildLink();
+    modal.classList.add('show');
+    if (linkOut.value.length > 60000) toast('Link rất dài, nên dùng data.json');
+  });
+
+  document.getElementById('btnPreview').addEventListener('click', function () {
+    window.open(buildLink(), '_blank');
+  });
+
+  document.getElementById('copyLink').addEventListener('click', function () {
+    copyText(linkOut.value)
+      .then(function () { toast('Đã copy link User'); })
+      .catch(function () { linkOut.select(); toast('Hãy nhấn Ctrl+C để copy'); });
+  });
+
+  document.getElementById('openLink').addEventListener('click', function () {
+    if (linkOut.value) window.open(linkOut.value, '_blank');
+  });
+
+  document.getElementById('closeModal').addEventListener('click', function () {
+    modal.classList.remove('show');
+  });
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  /* ===== RESET ===== */
+  document.getElementById('btnReset').addEventListener('click', function () {
+    if (!confirm('Đặt lại toàn bộ về dữ liệu mặc định?')) return;
+    state = normalize(clone(DEFAULT_STATE));
+    save(); render();
+    toast('Đã đặt lại dữ liệu');
+  });
+
+  /* ================= START ================= */
+  render();
+})();
+</script>
+</body>
+</html>
