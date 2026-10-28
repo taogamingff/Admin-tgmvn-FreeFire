@@ -5,149 +5,300 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ADMIN • QUẢN TRỊ SỰ KIỆN</title>
 <style>
+@font-face{
+  font-family:"GFF-Latin-Bold";
+  src:url("https://dl.dir.freefiremobile.com/common/web_event/common/fonts/website/GFFLatinW05-Bold.woff2") format("woff2"),
+      url("https://dl.dir.freefiremobile.com/common/web_event/common/fonts/website/GFFLatinW05-Bold.woff") format("woff");
+  font-weight:700;font-style:normal;font-display:swap;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --line:rgba(255,255,255,.10);
+  --line:rgba(255,255,255,.12);
   --gold:#ffd166;
   --gold2:#ffb347;
   --txt:#e9eefb;
-  --muted:#8b96b4;
+  --muted:#8fa2c2;
   --danger:#ff5d5d;
 }
 html,body{min-height:100%}
 body{
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-family:"GFF-Latin-Bold",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color:var(--txt);
-  background:
-    radial-gradient(900px 520px at 8% -12%,rgba(255,190,80,.14),transparent 60%),
-    radial-gradient(900px 520px at 96% 4%,rgba(90,130,255,.15),transparent 60%),
-    #070b16;
-  background-attachment:fixed;
+  background-color:#0a0f1e;
   padding:clamp(12px,2.5vw,26px);
-  padding-bottom:60px;
+  padding-bottom:80px;
+  overflow-x:hidden;
 }
-/* ===== TOP ===== */
-.top{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
-h1{
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(10,20,40,.45) 0%, rgba(0,0,0,.8) 100%),
+    url('https://cdn.wildflamestudio.com/common/web_event/official2.ff.garena.all/img/20228/b2b0012af7e3bfcdc90cd8744065e8ab.jpg');
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  z-index:-1;pointer-events:none;
+}
+
+/* ============ SCREEN ============ */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ============ LOGIN ============ */
+#loginScreen{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:18px;z-index:1000;
+  background:rgba(4,8,16,.72);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  backdrop-filter:blur(14px) saturate(140%);
+}
+#loginScreen.active{display:flex}
+.login-box{
+  width:min(420px,100%);
+  background:linear-gradient(160deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,209,102,.3);
+  border-radius:20px;
+  padding:28px 26px 24px;
+  box-shadow:
+    0 30px 70px rgba(0,0,0,.75),
+    0 0 0 1px rgba(255,255,255,.05) inset,
+    0 0 40px rgba(255,180,60,.08);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  backdrop-filter:blur(22px) saturate(180%);
+  animation:loginIn .5s cubic-bezier(.2,.9,.3,1);
+  position:relative;overflow:hidden;
+}
+.login-box::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,209,102,.8),transparent);
+}
+@keyframes loginIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo h1{
+  font-size:22px;letter-spacing:3px;font-weight:800;margin-bottom:6px;
+  background:linear-gradient(135deg,#fff 0%,#ffe28a 45%,#ffb347 80%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 14px rgba(255,180,0,.4));
+}
+.login-logo p{
+  font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
+}
+
+.login-field{margin-bottom:14px}
+.login-field label{
+  display:block;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px;font-weight:700;
+}
+.login-field input{
+  width:100%;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:.5px;
+  color:#fff;background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.14);border-radius:12px;
+  padding:12px 14px;outline:none;transition:.2s;
+}
+.login-field input:focus{
+  border-color:rgba(255,209,102,.7);
+  box-shadow:0 0 0 3px rgba(255,209,102,.14);
+  background:rgba(0,0,0,.45);
+}
+.pwd-wrap{position:relative}
+.pwd-wrap input{padding-right:46px}
+.pwd-toggle{
+  position:absolute;top:50%;right:6px;transform:translateY(-50%);
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,.6);
+  border-radius:8px;transition:.2s;
+}
+.pwd-toggle:hover{color:var(--gold);background:rgba(255,209,102,.1)}
+.pwd-toggle svg{width:18px;height:18px;display:block}
+
+.login-btn{
+  width:100%;margin-top:6px;
+  font-family:inherit;font-size:13.5px;font-weight:800;letter-spacing:2px;
+  padding:13px;border-radius:12px;cursor:pointer;color:#241300;
+  background:linear-gradient(135deg,#ffd166,#ffb347);
+  border:none;
+  box-shadow:0 8px 24px rgba(255,180,60,.35);
+  transition:.22s;
+}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,180,60,.5)}
+.login-btn:active{transform:translateY(0) scale(.98)}
+.login-error{
+  margin-top:12px;font-size:12px;letter-spacing:.5px;
+  color:#ff8b8b;text-align:center;min-height:16px;
+}
+
+/* ============ ADMIN PANEL ============ */
+#adminPanel{
+  max-width:1400px;margin:0 auto;
+  animation:fadeIn .35s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.top{
+  display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;
+  margin-bottom:20px;
+}
+.top h1{
   font-size:clamp(18px,2.6vw,26px);letter-spacing:2px;font-weight:800;
   background:linear-gradient(135deg,#fff 0%,#ffe28a 45%,#ffb347 80%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 3px 12px rgba(255,180,0,.35));
+  filter:drop-shadow(0 3px 14px rgba(255,180,0,.4));
 }
-.sub{font-size:12.5px;color:var(--muted);letter-spacing:.6px;margin-top:5px}
+.sub{font-size:12.5px;color:var(--muted);letter-spacing:.6px;margin-top:6px}
 .tools{display:flex;flex-wrap:wrap;gap:8px}
+
 .btn{
   font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.6px;
-  padding:9px 14px;border-radius:10px;cursor:pointer;
-  color:var(--txt);background:rgba(255,255,255,.06);
-  border:1px solid var(--line);transition:.2s ease;
+  padding:10px 15px;border-radius:10px;cursor:pointer;
+  color:var(--txt);background:rgba(255,255,255,.07);
+  border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:.2s ease;
 }
-.btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.btn:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .btn:active{transform:translateY(0) scale(.98)}
-.btn-gold{background:linear-gradient(135deg,#ffd166,#ffb347);color:#241300;border-color:transparent;box-shadow:0 6px 18px rgba(255,180,60,.28)}
-.btn-gold:hover{box-shadow:0 8px 24px rgba(255,180,60,.42)}
-.btn-danger{color:#ffb4b4;border-color:rgba(255,93,93,.4);background:rgba(255,93,93,.1)}
-.btn-danger:hover{background:rgba(255,93,93,.2)}
+.btn-gold{
+  background:linear-gradient(135deg,#ffd166,#ffb347);color:#241300;border-color:transparent;
+  box-shadow:0 6px 18px rgba(255,180,60,.32);
+}
+.btn-gold:hover{box-shadow:0 10px 26px rgba(255,180,60,.48)}
+.btn-danger{color:#ffb4b4;border-color:rgba(255,93,93,.4);background:rgba(255,93,93,.12)}
+.btn-danger:hover{background:rgba(255,93,93,.22)}
+
 /* ===== CARD ===== */
 .card{
   position:relative;
-  background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.02));
-  border:1px solid var(--line);border-radius:16px;
-  padding:14px 16px 16px;margin-bottom:14px;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  box-shadow:0 12px 34px rgba(0,0,0,.35);
-  animation:fade .25s ease;
+  background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,209,102,.25);border-radius:16px;
+  padding:16px 18px 18px;margin-bottom:14px;
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.04);
+  animation:cardIn .3s ease;
 }
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .badge{
-  font-size:11px;font-weight:800;letter-spacing:1px;padding:5px 9px;border-radius:8px;
+  font-size:11px;font-weight:800;letter-spacing:1px;padding:6px 10px;border-radius:8px;
   color:#241300;background:linear-gradient(135deg,#ffd166,#ffb347);flex-shrink:0;
+  box-shadow:0 3px 10px rgba(255,180,60,.3);
 }
 .name-input{
-  flex:1;min-width:160px;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.5px;
-  color:#fff;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;
-  padding:9px 12px;outline:none;transition:.18s;
+  flex:1;min-width:160px;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.6px;
+  color:#fff;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;
+  padding:10px 13px;outline:none;transition:.18s;
 }
-.name-input:focus{border-color:rgba(255,209,102,.6);box-shadow:0 0 0 3px rgba(255,209,102,.12)}
+.name-input:focus{border-color:rgba(255,209,102,.65);box-shadow:0 0 0 3px rgba(255,209,102,.14)}
 .acts{display:flex;gap:6px}
 .mini{
-  font-family:inherit;font-size:12px;font-weight:700;padding:7px 10px;border-radius:8px;cursor:pointer;
-  color:var(--txt);background:rgba(255,255,255,.06);border:1px solid var(--line);transition:.18s;
+  font-family:inherit;font-size:12px;font-weight:700;padding:8px 11px;border-radius:8px;
+  cursor:pointer;color:var(--txt);background:rgba(255,255,255,.06);
+  border:1px solid var(--line);transition:.18s;
 }
 .mini:hover{background:rgba(255,255,255,.14)}
-.mini.del{color:#ffb4b4;border-color:rgba(255,93,93,.35);background:rgba(255,93,93,.1)}
-.mini.del:hover{background:rgba(255,93,93,.22)}
+.mini.del{color:#ffb4b4;border-color:rgba(255,93,93,.35);background:rgba(255,93,93,.12)}
+.mini.del:hover{background:rgba(255,93,93,.24)}
+
 /* ===== FIELD ===== */
-.lbl{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.row{margin-bottom:12px}
+.lbl{
+  display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:7px;
+}
+.row{margin-bottom:14px}
 .txt{
   width:100%;font-family:inherit;font-size:13px;color:#fff;
-  background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;
-  padding:9px 12px;outline:none;transition:.18s;
+  background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;
+  padding:10px 13px;outline:none;transition:.18s;
 }
-.txt:focus{border-color:rgba(255,209,102,.6);box-shadow:0 0 0 3px rgba(255,209,102,.12)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.txt:focus{border-color:rgba(255,209,102,.65);box-shadow:0 0 0 3px rgba(255,209,102,.14)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .input-row{display:flex;gap:8px}
 .input-row .txt{flex:1;min-width:0}
 .preview{
-  margin-top:8px;height:96px;border-radius:10px;
-  border:1px dashed rgba(255,255,255,.16);
-  background:rgba(0,0,0,.28);
+  margin-top:9px;height:100px;border-radius:10px;
+  border:1px dashed rgba(255,255,255,.18);background:rgba(0,0,0,.3);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;position:relative;
 }
 .preview img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-.preview:not(.has)::after{content:"Chưa có ảnh";font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px}
+.preview:not(.has)::after{
+  content:"Chưa có ảnh";font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;
+}
 .preview:not(.has) img{display:none}
+
 /* ===== BANNER BOX ===== */
-.banner-box{margin-top:8px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+.banner-box{
+  margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;
+}
 .banner-box summary{
   cursor:pointer;list-style:none;font-size:12px;font-weight:800;letter-spacing:1.4px;
   color:var(--gold);padding:6px 0;user-select:none;
 }
 .banner-box summary::-webkit-details-marker{display:none}
-.banner-box summary::before{content:"▸";display:inline-block;margin-right:8px;transition:.2s}
+.banner-box summary::before{
+  content:"▸";display:inline-block;margin-right:9px;transition:.2s;
+}
 .banner-box[open] summary::before{transform:rotate(90deg)}
-.banner-box[open] summary{margin-bottom:10px}
-/* ===== ADD CARD ===== */
+.banner-box[open] summary{margin-bottom:12px}
+
+/* ===== ADD ===== */
 .add-card{
   display:flex;align-items:center;justify-content:center;gap:10px;
-  width:100%;padding:18px;border-radius:16px;cursor:pointer;
+  width:100%;padding:20px;border-radius:16px;cursor:pointer;
   font-family:inherit;font-size:14px;font-weight:800;letter-spacing:1.5px;
   color:var(--gold);background:rgba(255,209,102,.06);
-  border:2px dashed rgba(255,209,102,.35);transition:.22s;
+  border:2px dashed rgba(255,209,102,.4);transition:.22s;
 }
-.add-card:hover{background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.7);transform:translateY(-1px)}
+.add-card:hover{
+  background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.75);
+  transform:translateY(-1px);
+}
 .add-card .plus{font-size:22px;line-height:1}
+
 /* ===== TOAST ===== */
 .toast{
   position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
-  padding:11px 18px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.5px;
-  background:rgba(20,26,44,.96);border:1px solid rgba(255,209,102,.45);
-  color:#ffe28a;box-shadow:0 14px 40px rgba(0,0,0,.6);
-  opacity:0;pointer-events:none;transition:.28s ease;z-index:9999;max-width:92vw;text-align:center;
+  padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.5px;
+  background:rgba(20,26,44,.96);border:1px solid rgba(255,209,102,.5);
+  color:#ffe28a;box-shadow:0 14px 40px rgba(0,0,0,.7);
+  opacity:0;pointer-events:none;transition:.28s ease;z-index:9999;
+  max-width:92vw;text-align:center;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
+
 /* ===== MODAL ===== */
 .modal{
-  position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px;
-  background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  position:fixed;inset:0;z-index:9998;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(0,0,0,.75);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   opacity:0;visibility:hidden;transition:.25s;
 }
 .modal.show{opacity:1;visibility:visible}
 .modal-box{
-  width:min(760px,100%);background:#0e1424;border:1px solid var(--line);border-radius:16px;
-  padding:20px;box-shadow:0 30px 70px rgba(0,0,0,.7);
+  width:min(820px,100%);
+  background:linear-gradient(160deg,rgba(20,28,48,.98),rgba(10,16,32,.98));
+  border:1px solid rgba(255,209,102,.3);border-radius:16px;
+  padding:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
 }
-.modal-box h3{font-size:15px;letter-spacing:1.5px;color:var(--gold);margin-bottom:8px}
-.modal-box p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.modal-box h3{
+  font-size:15px;letter-spacing:1.8px;color:var(--gold);margin-bottom:10px;
+}
+.modal-box p{
+  font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px;
+}
 #linkOut{
-  width:100%;height:130px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:11.5px;color:#cfe3ff;background:rgba(0,0,0,.4);
-  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;word-break:break-all;
+  width:100%;height:150px;resize:vertical;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px;color:#cfe3ff;background:rgba(0,0,0,.5);
+  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;
+  word-break:break-all;
 }
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+
 @media(max-width:520px){
   .top{align-items:flex-start}
   .tools{width:100%}
@@ -157,29 +308,69 @@ h1{
 </head>
 <body>
 
-<div class="top">
-  <div>
-    <h1>QUẢN TRỊ SỰ KIỆN</h1>
-    <p class="sub" id="subDesc">Tự động thêm • 0 sự kiện</p>
-  </div>
-  <div class="tools">
-    <button class="btn btn-gold" id="btnAdd">+ Tạo sự kiện</button>
-    <button class="btn" id="btnLink">🔗 Tạo Link User</button>
-    <button class="btn" id="btnCopy">📋 Copy JSON</button>
-    <button class="btn" id="btnExport">⬇ Xuất data.json</button>
-    <button class="btn" id="btnImport">⬆ Nhập JSON</button>
-    <button class="btn" id="btnPreview">👁 Xem trước</button>
-    <button class="btn btn-danger" id="btnReset">↺ Đặt lại</button>
-    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="screen active">
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>QUẢN TRỊ VIÊN</h1>
+      <p>TGM VN • FREE FIRE</p>
+    </div>
+
+    <div class="login-field">
+      <label for="loginUser">Tài khoản</label>
+      <input type="text" id="loginUser" placeholder="Nhập tài khoản" autocomplete="username" spellcheck="false">
+    </div>
+
+    <div class="login-field">
+      <label for="loginPass">Mật khẩu</label>
+      <div class="pwd-wrap">
+        <input type="password" id="loginPass" placeholder="Nhập mật khẩu" autocomplete="current-password">
+        <button type="button" class="pwd-toggle" id="togglePwd" aria-label="Hiện mật khẩu">
+          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="login-btn" id="loginBtn">ĐĂNG NHẬP</button>
+    <p class="login-error" id="loginError"></p>
   </div>
 </div>
 
-<main id="list"></main>
+<!-- ================= ADMIN PANEL ================= -->
+<div id="adminPanel" class="screen">
+  <div class="top">
+    <div>
+      <h1>QUẢN TRỊ SỰ KIỆN</h1>
+      <p class="sub" id="subDesc">Tự động thêm • 0 sự kiện</p>
+    </div>
+    <div class="tools">
+      <button class="btn btn-gold" id="btnAdd">+ Tạo sự kiện</button>
+      <button class="btn" id="btnLink">🔗 Tạo Link User</button>
+      <button class="btn" id="btnCopy">📋 Copy JSON</button>
+      <button class="btn" id="btnExport">⬇ Xuất data.json</button>
+      <button class="btn" id="btnImport">⬆ Nhập JSON</button>
+      <button class="btn" id="btnPreview">👁 Xem trước</button>
+      <button class="btn btn-danger" id="btnReset">↺ Đặt lại</button>
+      <button class="btn btn-danger" id="btnLogout">⎋ Đăng xuất</button>
+      <input type="file" id="fileInput" accept=".json,application/json" hidden>
+    </div>
+  </div>
 
+  <main id="list"></main>
+</div>
+
+<!-- ================= MODAL LINK ================= -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3>TẠO LINK USER</h3>
-    <p>Dữ liệu được nhúng trực tiếp trong link. Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
+    <p>Dữ liệu được nhúng trực tiếp trong link (dạng <code>?d=...</code> an toàn hơn <code>#d=...</code> khi share qua Zalo/Messenger). Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
     <textarea id="linkOut" readonly></textarea>
     <div class="modal-actions">
       <button class="btn btn-gold" id="copyLink">Sao chép</button>
@@ -195,10 +386,101 @@ h1{
 (function () {
   'use strict';
 
+  /* ==================================================
+     XÁC THỰC ĐĂNG NHẬP
+     (base64 chia nhỏ — không lộ rõ trong source)
+  ================================================== */
+  var SESSION_KEY = 'tgmvn_admin_session_v1';
+
+  // Giải mã username/password từ chuỗi base64 đã chia nhỏ
+  function _d64(parts) {
+    try { return atob(parts.join('')); } catch (e) { return ''; }
+  }
+  var _U64 = ['QXpl','cnN0','IEZy','ZWUg','Rmly','ZQ=='].join('');
+  var _P64 = ['QXpl','cnN0','RnJl','ZUZp','cmUx','MjI='].join('');
+  var AUTH_USER = _d64(_U64.split(''));
+  var AUTH_PASS = _d64(_P64.split(''));
+
+  // Gộp cho dễ dùng
+  AUTH_USER = _d64([_U64.slice(0,8), _U64.slice(8,16), _U64.slice(16)]);
+  AUTH_PASS = _d64([_P64.slice(0,8), _P64.slice(8,16), _P64.slice(16)]);
+
+  var loginScreen = document.getElementById('loginScreen');
+  var adminPanel  = document.getElementById('adminPanel');
+  var loginUser   = document.getElementById('loginUser');
+  var loginPass   = document.getElementById('loginPass');
+  var loginBtn    = document.getElementById('loginBtn');
+  var loginError  = document.getElementById('loginError');
+  var togglePwd   = document.getElementById('togglePwd');
+  var eyeOpen     = togglePwd.querySelector('.eye-open');
+  var eyeOff      = togglePwd.querySelector('.eye-off');
+
+  // Eye toggle
+  var pwdVisible = false;
+  togglePwd.addEventListener('click', function () {
+    pwdVisible = !pwdVisible;
+    loginPass.type = pwdVisible ? 'text' : 'password';
+    eyeOpen.style.display = pwdVisible ? 'none' : '';
+    eyeOff.style.display  = pwdVisible ? '' : 'none';
+    togglePwd.setAttribute('aria-label', pwdVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+    loginPass.focus();
+  });
+
+  function showLogin() {
+    loginScreen.classList.add('active');
+    adminPanel.classList.remove('active');
+    setTimeout(function () { loginUser.focus(); }, 200);
+  }
+  function showPanel() {
+    loginScreen.classList.remove('active');
+    adminPanel.classList.add('active');
+    if (window.__adminBoot) window.__adminBoot();
+  }
+
+  function tryLogin() {
+    var u = (loginUser.value || '').trim();
+    var p = loginPass.value || '';
+    if (!u || !p) {
+      loginError.textContent = 'Vui lòng nhập đủ tài khoản và mật khẩu';
+      return;
+    }
+    if (u === AUTH_USER && p === AUTH_PASS) {
+      loginError.textContent = '';
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+      showPanel();
+    } else {
+      loginError.textContent = 'Sai tài khoản hoặc mật khẩu';
+      loginPass.value = '';
+      loginPass.focus();
+    }
+  }
+
+  loginBtn.addEventListener('click', tryLogin);
+  loginPass.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') tryLogin();
+  });
+  loginUser.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') loginPass.focus();
+  });
+
+  document.getElementById('btnLogout').addEventListener('click', function () {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    loginUser.value = '';
+    loginPass.value = '';
+    showLogin();
+  });
+
+  // Kiểm tra session khi load
+  var hasSession = false;
+  try { hasSession = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
+  if (hasSession) showPanel(); else showLogin();
+
+  /* ==================================================
+     PHẦN QUẢN TRỊ (giữ nguyên logic cũ)
+  ================================================== */
   var LS_KEY   = 'tgmvn_ff_admin_v1';
   var USER_URL = 'https://azerst-freefire.vercel.app/';
 
-  /* ================= DỮ LIỆU MẶC ĐỊNH ================= */
   var DEFAULT_STATE = {
     siteTitle: 'TAB SỰ KIỆN | Trang chủ',
     footer: '© Azerst 2026 – All rights reserved',
@@ -248,7 +530,6 @@ h1{
     ]
   };
 
-  /* ================= HELPERS ================= */
   var list    = document.getElementById('list');
   var subDesc = document.getElementById('subDesc');
   var toastEl = document.getElementById('toast');
@@ -268,7 +549,7 @@ h1{
     toastEl.textContent = msg;
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
   }
 
   function b64urlEncode(str) {
@@ -295,7 +576,6 @@ h1{
     });
   }
 
-  /* ================= STATE ================= */
   function normalize(d) {
     d = d || {};
     d.siteTitle = d.siteTitle || DEFAULT_STATE.siteTitle;
@@ -343,7 +623,6 @@ h1{
     }, 180);
   }
 
-  /* ================= RENDER ================= */
   function urlField(field, label, value) {
     value = value || '';
     return '' +
@@ -411,7 +690,6 @@ h1{
     subDesc.textContent = 'Tự động thêm • ' + state.events.length + ' sự kiện • Lưu tự động';
   }
 
-  /* ================= PREVIEW ================= */
   function setPreview(container, url) {
     if (!container) return;
     var img = container.querySelector('img');
@@ -425,7 +703,6 @@ h1{
     }
   }
 
-  /* ================= EVENT DELEGATION ================= */
   list.addEventListener('input', function (e) {
     var el = e.target;
     var card = el.closest('.card');
@@ -449,7 +726,6 @@ h1{
   });
 
   list.addEventListener('click', function (e) {
-    /* Xóa link ảnh */
     var clr = e.target.closest('[data-clear]');
     if (clr) {
       var card0 = clr.closest('.card');
@@ -461,10 +737,8 @@ h1{
       return;
     }
 
-    /* Nút thêm sự kiện */
     if (e.target.closest('#addCard')) { addEvent(); return; }
 
-    /* Hành động */
     var act = e.target.closest('[data-act]');
     if (!act) return;
     var card = act.closest('.card');
@@ -506,7 +780,6 @@ h1{
     toast('Đã thêm "Sự kiện ' + n + '"');
   }
 
-  /* ================= TOOLBAR ================= */
   document.getElementById('btnAdd').addEventListener('click', addEvent);
 
   document.getElementById('btnCopy').addEventListener('click', function () {
@@ -524,7 +797,7 @@ h1{
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1200);
-    toast('Đã xuất data.json — đưa file này vào repo User');
+    toast('Đã xuất data.json — upload file này cùng thư mục index.html của User');
   });
 
   var fileInput = document.getElementById('fileInput');
@@ -548,22 +821,30 @@ h1{
     fileInput.value = '';
   });
 
-  /* ===== LINK USER ===== */
   var modal   = document.getElementById('modal');
   var linkOut = document.getElementById('linkOut');
 
+  // Tạo link dạng ?d= (query an toàn hơn hash khi share)
   function buildLink() {
-    return USER_URL + '#d=' + b64urlEncode(JSON.stringify(state));
+    var payload = b64urlEncode(JSON.stringify(state));
+    return USER_URL + '?d=' + payload + '&debug=1';
+  }
+  // Link preview ngắn hơn (không debug)
+  function buildCleanLink() {
+    var payload = b64urlEncode(JSON.stringify(state));
+    return USER_URL + '?d=' + payload;
   }
 
   document.getElementById('btnLink').addEventListener('click', function () {
-    linkOut.value = buildLink();
+    linkOut.value = buildCleanLink();
     modal.classList.add('show');
-    if (linkOut.value.length > 60000) toast('Link rất dài, nên dùng data.json');
+    if (linkOut.value.length > 4000) {
+      toast('⚠ Link dài (' + linkOut.value.length + ' ký tự), nên dùng data.json');
+    }
   });
 
   document.getElementById('btnPreview').addEventListener('click', function () {
-    window.open(buildLink(), '_blank');
+    window.open(buildCleanLink(), '_blank');
   });
 
   document.getElementById('copyLink').addEventListener('click', function () {
@@ -583,7 +864,6 @@ h1{
     if (e.target === modal) modal.classList.remove('show');
   });
 
-  /* ===== RESET ===== */
   document.getElementById('btnReset').addEventListener('click', function () {
     if (!confirm('Đặt lại toàn bộ về dữ liệu mặc định?')) return;
     state = normalize(clone(DEFAULT_STATE));
@@ -591,8 +871,13 @@ h1{
     toast('Đã đặt lại dữ liệu');
   });
 
-  /* ================= START ================= */
-  render();
+  // Boot admin lần đầu vào panel
+  var booted = false;
+  window.__adminBoot = function () {
+    if (booted) return;
+    booted = true;
+    render();
+  };
 })();
 </script>
 </body>
