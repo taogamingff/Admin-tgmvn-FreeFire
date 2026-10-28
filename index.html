@@ -39,41 +39,156 @@ body::before{
   z-index:-1;pointer-events:none;
 }
 
-/* ============ SCREEN ============ */
-.screen{display:none}
-.screen.active{display:block}
-
-/* ============ LOGIN ============ */
-#loginScreen{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  padding:18px;z-index:1000;
-  background:rgba(4,8,16,.72);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
-  backdrop-filter:blur(14px) saturate(140%);
+/* ============================================================
+   SCREENS - dùng visibility + opacity để có transition mượt
+============================================================ */
+#loginScreen, #adminPanel {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease, visibility 0s linear .4s, transform .4s cubic-bezier(.2,.9,.3,1);
 }
-#loginScreen.active{display:flex}
+#loginScreen.active, #adminPanel.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity .4s ease, visibility 0s, transform .4s cubic-bezier(.2,.9,.3,1);
+}
+
+#adminPanel {
+  transform: translateY(24px) scale(.97);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+#adminPanel.active { transform: none; }
+
+/* ============================================================
+   LOGIN SCREEN
+============================================================ */
+#loginScreen {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+  z-index: 1000;
+  background: rgba(4,8,16,.75);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* Orbs nền - chỉ hiện khi active */
+#loginScreen::before,
+#loginScreen::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity .6s ease .2s;
+}
+#loginScreen.active::before,
+#loginScreen.active::after { opacity: 1; }
+
+#loginScreen::before {
+  width: min(45vw, 520px); height: min(45vw, 520px);
+  background: radial-gradient(circle, rgba(255,179,71,.55), rgba(255,179,71,0) 70%);
+  top: -12vw; left: -12vw;
+  animation: orbA 14s ease-in-out infinite;
+}
+#loginScreen::after {
+  width: min(55vw, 650px); height: min(55vw, 650px);
+  background: radial-gradient(circle, rgba(90,130,255,.45), rgba(90,130,255,0) 70%);
+  bottom: -18vw; right: -18vw;
+  animation: orbB 18s ease-in-out infinite;
+}
+@keyframes orbA {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(6vw,-4vw) scale(1.2); }
+}
+@keyframes orbB {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-8vw,6vw) scale(1.15); }
+}
+
+/* ====== LOGIN BOX ====== */
 .login-box{
-  width:min(420px,100%);
-  background:linear-gradient(160deg,rgba(255,255,255,.1) 0%,rgba(255,255,255,.03) 100%);
-  border:1px solid rgba(255,209,102,.3);
-  border-radius:20px;
-  padding:28px 26px 24px;
-  box-shadow:
-    0 30px 70px rgba(0,0,0,.75),
-    0 0 0 1px rgba(255,255,255,.05) inset,
-    0 0 40px rgba(255,180,60,.08);
-  -webkit-backdrop-filter:blur(22px) saturate(180%);
-  backdrop-filter:blur(22px) saturate(180%);
-  animation:loginIn .5s cubic-bezier(.2,.9,.3,1);
-  position:relative;overflow:hidden;
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  background: linear-gradient(160deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.03) 100%);
+  border: 1px solid rgba(255,209,102,.3);
+  border-radius: 20px;
+  padding: 28px 26px 24px;
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  overflow: hidden;
+  animation:
+    loginIn .6s cubic-bezier(.2,.9,.3,1),
+    loginGlow 4s ease-in-out .6s infinite alternate;
 }
 .login-box::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,209,102,.8),transparent);
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,209,102,.9), transparent);
+  animation: shimmer 3s ease-in-out infinite;
 }
-@keyframes loginIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes shimmer {
+  0%,100% { opacity: .4; transform: translateX(-30%); }
+  50% { opacity: 1; transform: translateX(30%); }
+}
 
+@keyframes loginIn {
+  from { opacity: 0; transform: translateY(30px) scale(.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes loginGlow {
+  from {
+    box-shadow:
+      0 30px 70px rgba(0,0,0,.75),
+      0 0 0 1px rgba(255,255,255,.05) inset,
+      0 0 30px rgba(255,180,60,.18);
+  }
+  to {
+    box-shadow:
+      0 30px 70px rgba(0,0,0,.75),
+      0 0 0 1px rgba(255,255,255,.05) inset,
+      0 0 60px rgba(255,180,60,.42);
+  }
+}
+
+/* Shake khi sai */
+.login-box.shake {
+  animation: shake .5s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  15%,55% { transform: translateX(-10px); }
+  35%,75% { transform: translateX(10px); }
+}
+
+/* Success flash */
+.login-box.success {
+  animation: successFlash .7s ease;
+}
+@keyframes successFlash {
+  0% {
+    box-shadow:
+      0 30px 70px rgba(0,0,0,.75),
+      0 0 0 2px rgba(80,220,120,.9) inset,
+      0 0 90px rgba(80,220,120,.9);
+    border-color: rgba(80,220,120,.9);
+  }
+  100% {
+    box-shadow:
+      0 30px 70px rgba(0,0,0,.75),
+      0 0 0 1px rgba(80,220,120,0) inset,
+      0 0 0 rgba(80,220,120,0);
+    border-color: rgba(80,220,120,.3);
+  }
+}
+
+/* ====== LOGO ====== */
 .login-logo{text-align:center;margin-bottom:24px}
 .login-logo h1{
   font-size:22px;letter-spacing:3px;font-weight:800;margin-bottom:6px;
@@ -85,6 +200,7 @@ body::before{
   font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
 }
 
+/* ====== FIELD ====== */
 .login-field{margin-bottom:14px}
 .login-field label{
   display:block;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;
@@ -94,47 +210,109 @@ body::before{
   width:100%;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:.5px;
   color:#fff;background:rgba(0,0,0,.35);
   border:1px solid rgba(255,255,255,.14);border-radius:12px;
-  padding:12px 14px;outline:none;transition:.2s;
+  padding:12px 14px;outline:none;
+  transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
 }
 .login-field input:focus{
   border-color:rgba(255,209,102,.7);
   box-shadow:0 0 0 3px rgba(255,209,102,.14);
-  background:rgba(0,0,0,.45);
+  background:rgba(0,0,0,.5);
 }
+
+/* Password + eye */
 .pwd-wrap{position:relative}
 .pwd-wrap input{padding-right:46px}
 .pwd-toggle{
   position:absolute;top:50%;right:6px;transform:translateY(-50%);
   width:36px;height:36px;display:flex;align-items:center;justify-content:center;
   background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,.6);
-  border-radius:8px;transition:.2s;
+  border-radius:8px;transition:.22s ease;
 }
 .pwd-toggle:hover{color:var(--gold);background:rgba(255,209,102,.1)}
+.pwd-toggle:active{transform:translateY(-50%) scale(.9)}
 .pwd-toggle svg{width:18px;height:18px;display:block}
 
+/* ====== BUTTON ====== */
 .login-btn{
+  position: relative;
+  overflow: hidden;
   width:100%;margin-top:6px;
   font-family:inherit;font-size:13.5px;font-weight:800;letter-spacing:2px;
-  padding:13px;border-radius:12px;cursor:pointer;color:#241300;
+  padding:14px;border-radius:12px;cursor:pointer;color:#241300;
   background:linear-gradient(135deg,#ffd166,#ffb347);
   border:none;
   box-shadow:0 8px 24px rgba(255,180,60,.35);
-  transition:.22s;
+  transition:transform .22s ease, box-shadow .22s ease;
 }
-.login-btn:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,180,60,.5)}
-.login-btn:active{transform:translateY(0) scale(.98)}
+.login-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 32px rgba(255,180,60,.55);
+}
+.login-btn:active{
+  transform:translateY(0) scale(.98);
+}
+.login-btn::before{
+  content:"";
+  position:absolute;top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+  transition:left .7s cubic-bezier(.2,.9,.3,1);
+  pointer-events:none;
+}
+.login-btn:hover::before{left:100%}
+
+.login-btn .btn-text{
+  position:relative;
+  z-index:1;
+  transition:opacity .2s ease;
+}
+
+/* Loading spinner */
+.login-btn.loading{
+  cursor: wait;
+}
+.login-btn.loading .btn-text{
+  opacity: 0;
+}
+.login-btn.loading::after{
+  content:"";
+  position:absolute;
+  top:50%;left:50%;
+  width:18px;height:18px;
+  margin:-9px 0 0 -9px;
+  border:2.5px solid rgba(36,19,0,.25);
+  border-top-color:#241300;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ====== ERROR ====== */
 .login-error{
-  margin-top:12px;font-size:12px;letter-spacing:.5px;
-  color:#ff8b8b;text-align:center;min-height:16px;
+  margin-top:12px;
+  font-size:12px;
+  letter-spacing:.5px;
+  color:#ff8b8b;
+  text-align:center;
+  min-height:16px;
+  opacity:0;
+  transform:translateY(-4px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.login-error.show{
+  opacity:1;
+  transform: none;
 }
 
-/* ============ ADMIN PANEL ============ */
-#adminPanel{
-  max-width:1400px;margin:0 auto;
-  animation:fadeIn .35s ease;
+@media(max-width:480px){
+  .login-box{padding:24px 20px 20px}
+  .login-logo h1{font-size:19px}
+  .login-logo p{font-size:10px}
 }
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
+/* ============================================================
+   ADMIN PANEL
+============================================================ */
 .top{
   display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;
   margin-bottom:20px;
@@ -309,7 +487,7 @@ body::before{
 <body>
 
 <!-- ================= LOGIN ================= -->
-<div id="loginScreen" class="screen active">
+<div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
       <h1>QUẢN TRỊ VIÊN</h1>
@@ -338,13 +516,15 @@ body::before{
       </div>
     </div>
 
-    <button type="button" class="login-btn" id="loginBtn">ĐĂNG NHẬP</button>
+    <button type="button" class="login-btn" id="loginBtn">
+      <span class="btn-text">ĐĂNG NHẬP</span>
+    </button>
     <p class="login-error" id="loginError"></p>
   </div>
 </div>
 
 <!-- ================= ADMIN PANEL ================= -->
-<div id="adminPanel" class="screen">
+<div id="adminPanel">
   <div class="top">
     <div>
       <h1>QUẢN TRỊ SỰ KIỆN</h1>
@@ -370,7 +550,7 @@ body::before{
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3>TẠO LINK USER</h3>
-    <p>Dữ liệu được nhúng trực tiếp trong link (dạng <code>?d=...</code> an toàn hơn <code>#d=...</code> khi share qua Zalo/Messenger). Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
+    <p>Dữ liệu được nhúng trực tiếp trong link (dạng <code>?d=...</code>). Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
     <textarea id="linkOut" readonly></textarea>
     <div class="modal-actions">
       <button class="btn btn-gold" id="copyLink">Sao chép</button>
@@ -386,27 +566,22 @@ body::before{
 (function () {
   'use strict';
 
-  /* ==================================================
-     XÁC THỰC ĐĂNG NHẬP
-     (base64 chia nhỏ — không lộ rõ trong source)
-  ================================================== */
+  /* ============================================================
+     PHẦN XÁC THỰC ĐĂNG NHẬP
+  ============================================================ */
   var SESSION_KEY = 'tgmvn_admin_session_v1';
 
-  // Giải mã username/password từ chuỗi base64 đã chia nhỏ
   function _d64(parts) {
     try { return atob(parts.join('')); } catch (e) { return ''; }
   }
   var _U64 = ['QXpl','cnN0','IEZy','ZWUg','Rmly','ZQ=='].join('');
   var _P64 = ['QXpl','cnN0','RnJl','ZUZp','cmUx','MjI='].join('');
-  var AUTH_USER = _d64(_U64.split(''));
-  var AUTH_PASS = _d64(_P64.split(''));
-
-  // Gộp cho dễ dùng
-  AUTH_USER = _d64([_U64.slice(0,8), _U64.slice(8,16), _U64.slice(16)]);
-  AUTH_PASS = _d64([_P64.slice(0,8), _P64.slice(8,16), _P64.slice(16)]);
+  var AUTH_USER = _d64([_U64.slice(0,8), _U64.slice(8,16), _U64.slice(16)]);
+  var AUTH_PASS = _d64([_P64.slice(0,8), _P64.slice(8,16), _P64.slice(16)]);
 
   var loginScreen = document.getElementById('loginScreen');
   var adminPanel  = document.getElementById('adminPanel');
+  var loginBox    = document.querySelector('.login-box');
   var loginUser   = document.getElementById('loginUser');
   var loginPass   = document.getElementById('loginPass');
   var loginBtn    = document.getElementById('loginBtn');
@@ -415,7 +590,7 @@ body::before{
   var eyeOpen     = togglePwd.querySelector('.eye-open');
   var eyeOff      = togglePwd.querySelector('.eye-off');
 
-  // Eye toggle
+  // Toggle hiện/ẩn mật khẩu
   var pwdVisible = false;
   togglePwd.addEventListener('click', function () {
     pwdVisible = !pwdVisible;
@@ -426,33 +601,71 @@ body::before{
     loginPass.focus();
   });
 
-  function showLogin() {
-    loginScreen.classList.add('active');
-    adminPanel.classList.remove('active');
-    setTimeout(function () { loginUser.focus(); }, 200);
+  function showError(msg) {
+    loginError.textContent = msg;
+    loginError.classList.remove('show');
+    void loginError.offsetHeight;
+    loginError.classList.add('show');
   }
+  function clearError() {
+    loginError.classList.remove('show');
+    loginError.textContent = '';
+  }
+
   function showPanel() {
     loginScreen.classList.remove('active');
     adminPanel.classList.add('active');
-    if (window.__adminBoot) window.__adminBoot();
+    setTimeout(function () {
+      if (window.__adminBoot) window.__adminBoot();
+      var t = document.getElementById('toast');
+      if (t) {
+        t.textContent = '✓ Đăng nhập thành công';
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 2000);
+      }
+    }, 120);
+  }
+
+  function showLogin() {
+    adminPanel.classList.remove('active');
+    loginScreen.classList.add('active');
+    setTimeout(function () { loginUser.focus(); }, 450);
   }
 
   function tryLogin() {
     var u = (loginUser.value || '').trim();
     var p = loginPass.value || '';
+
     if (!u || !p) {
-      loginError.textContent = 'Vui lòng nhập đủ tài khoản và mật khẩu';
+      showError('Vui lòng nhập đủ tài khoản và mật khẩu');
+      loginBox.classList.add('shake');
+      setTimeout(function () { loginBox.classList.remove('shake'); }, 520);
       return;
     }
-    if (u === AUTH_USER && p === AUTH_PASS) {
-      loginError.textContent = '';
-      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
-      showPanel();
-    } else {
-      loginError.textContent = 'Sai tài khoản hoặc mật khẩu';
-      loginPass.value = '';
-      loginPass.focus();
-    }
+
+    clearError();
+    loginBtn.classList.add('loading');
+    loginBtn.disabled = true;
+
+    setTimeout(function () {
+      loginBtn.classList.remove('loading');
+      loginBtn.disabled = false;
+
+      if (u === AUTH_USER && p === AUTH_PASS) {
+        loginBox.classList.add('success');
+        try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+        setTimeout(function () {
+          loginBox.classList.remove('success');
+          showPanel();
+        }, 550);
+      } else {
+        showError('Sai tài khoản hoặc mật khẩu');
+        loginBox.classList.add('shake');
+        setTimeout(function () { loginBox.classList.remove('shake'); }, 520);
+        loginPass.value = '';
+        setTimeout(function () { loginPass.focus(); }, 150);
+      }
+    }, 550);
   }
 
   loginBtn.addEventListener('click', tryLogin);
@@ -467,17 +680,17 @@ body::before{
     try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
     loginUser.value = '';
     loginPass.value = '';
+    pwdVisible = false;
+    loginPass.type = 'password';
+    eyeOpen.style.display = '';
+    eyeOff.style.display = 'none';
+    clearError();
     showLogin();
   });
 
-  // Kiểm tra session khi load
-  var hasSession = false;
-  try { hasSession = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
-  if (hasSession) showPanel(); else showLogin();
-
-  /* ==================================================
-     PHẦN QUẢN TRỊ (giữ nguyên logic cũ)
-  ================================================== */
+  /* ============================================================
+     PHẦN QUẢN TRỊ
+  ============================================================ */
   var LS_KEY   = 'tgmvn_ff_admin_v1';
   var USER_URL = 'https://azerst-freefire.vercel.app/';
 
@@ -797,7 +1010,7 @@ body::before{
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1200);
-    toast('Đã xuất data.json — upload file này cùng thư mục index.html của User');
+    toast('Đã xuất data.json — upload cùng thư mục index.html của User');
   });
 
   var fileInput = document.getElementById('fileInput');
@@ -824,12 +1037,6 @@ body::before{
   var modal   = document.getElementById('modal');
   var linkOut = document.getElementById('linkOut');
 
-  // Tạo link dạng ?d= (query an toàn hơn hash khi share)
-  function buildLink() {
-    var payload = b64urlEncode(JSON.stringify(state));
-    return USER_URL + '?d=' + payload + '&debug=1';
-  }
-  // Link preview ngắn hơn (không debug)
   function buildCleanLink() {
     var payload = b64urlEncode(JSON.stringify(state));
     return USER_URL + '?d=' + payload;
@@ -871,13 +1078,31 @@ body::before{
     toast('Đã đặt lại dữ liệu');
   });
 
-  // Boot admin lần đầu vào panel
+  /* ============================================================
+     BOOT ADMIN
+  ============================================================ */
   var booted = false;
   window.__adminBoot = function () {
     if (booted) return;
     booted = true;
     render();
   };
+
+  /* ============================================================
+     KHỞI ĐỘNG - kiểm tra session
+  ============================================================ */
+  var hasSession = false;
+  try { hasSession = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
+
+  if (hasSession) {
+    loginScreen.classList.remove('active');
+    adminPanel.classList.add('active');
+    window.__adminBoot();
+  } else {
+    loginScreen.classList.add('active');
+    adminPanel.classList.remove('active');
+    setTimeout(function () { loginUser.focus(); }, 450);
+  }
 })();
 </script>
 </body>
