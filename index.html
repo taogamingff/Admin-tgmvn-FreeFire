@@ -38,157 +38,67 @@ body::before{
   background-size:cover;background-position:center;background-repeat:no-repeat;
   z-index:-1;pointer-events:none;
 }
-
-/* ============================================================
-   SCREENS - dùng visibility + opacity để có transition mượt
-============================================================ */
 #loginScreen, #adminPanel {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+  visibility: hidden;opacity: 0;pointer-events: none;
   transition: opacity .4s ease, visibility 0s linear .4s, transform .4s cubic-bezier(.2,.9,.3,1);
 }
 #loginScreen.active, #adminPanel.active {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
+  visibility: visible;opacity: 1;pointer-events: auto;
   transition: opacity .4s ease, visibility 0s, transform .4s cubic-bezier(.2,.9,.3,1);
 }
+#adminPanel{transform: translateY(24px) scale(.97);max-width:1400px;margin:0 auto}
+#adminPanel.active{transform:none}
 
-#adminPanel {
-  transform: translateY(24px) scale(.97);
-  max-width: 1400px;
-  margin: 0 auto;
+/* ============ LOGIN ============ */
+#loginScreen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:18px;z-index:1000;background:rgba(4,8,16,.75);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%);
 }
-#adminPanel.active { transform: none; }
+#loginScreen::before,#loginScreen::after{
+  content:"";position:absolute;border-radius:50%;filter:blur(80px);
+  pointer-events:none;z-index:0;opacity:0;transition:opacity .6s ease .2s;
+}
+#loginScreen.active::before,#loginScreen.active::after{opacity:1}
+#loginScreen::before{
+  width:min(45vw,520px);height:min(45vw,520px);
+  background:radial-gradient(circle,rgba(255,179,71,.55),rgba(255,179,71,0) 70%);
+  top:-12vw;left:-12vw;animation:orbA 14s ease-in-out infinite;
+}
+#loginScreen::after{
+  width:min(55vw,650px);height:min(55vw,650px);
+  background:radial-gradient(circle,rgba(90,130,255,.45),rgba(90,130,255,0) 70%);
+  bottom:-18vw;right:-18vw;animation:orbB 18s ease-in-out infinite;
+}
+@keyframes orbA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-4vw) scale(1.2)}}
+@keyframes orbB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-8vw,6vw) scale(1.15)}}
 
-/* ============================================================
-   LOGIN SCREEN
-============================================================ */
-#loginScreen {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  padding: 18px;
-  z-index: 1000;
-  background: rgba(4,8,16,.75);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
-}
-
-/* Orbs nền - chỉ hiện khi active */
-#loginScreen::before,
-#loginScreen::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity .6s ease .2s;
-}
-#loginScreen.active::before,
-#loginScreen.active::after { opacity: 1; }
-
-#loginScreen::before {
-  width: min(45vw, 520px); height: min(45vw, 520px);
-  background: radial-gradient(circle, rgba(255,179,71,.55), rgba(255,179,71,0) 70%);
-  top: -12vw; left: -12vw;
-  animation: orbA 14s ease-in-out infinite;
-}
-#loginScreen::after {
-  width: min(55vw, 650px); height: min(55vw, 650px);
-  background: radial-gradient(circle, rgba(90,130,255,.45), rgba(90,130,255,0) 70%);
-  bottom: -18vw; right: -18vw;
-  animation: orbB 18s ease-in-out infinite;
-}
-@keyframes orbA {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(6vw,-4vw) scale(1.2); }
-}
-@keyframes orbB {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50% { transform: translate(-8vw,6vw) scale(1.15); }
-}
-
-/* ====== LOGIN BOX ====== */
 .login-box{
-  position: relative;
-  z-index: 1;
-  width: min(420px, 100%);
-  background: linear-gradient(160deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,.03) 100%);
-  border: 1px solid rgba(255,209,102,.3);
-  border-radius: 20px;
-  padding: 28px 26px 24px;
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  backdrop-filter: blur(22px) saturate(180%);
-  overflow: hidden;
-  animation:
-    loginIn .6s cubic-bezier(.2,.9,.3,1),
-    loginGlow 4s ease-in-out .6s infinite alternate;
+  position:relative;z-index:1;width:min(420px,100%);
+  background:linear-gradient(160deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,209,102,.3);border-radius:20px;padding:28px 26px 24px;
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  overflow:hidden;
+  animation:loginIn .6s cubic-bezier(.2,.9,.3,1),loginGlow 4s ease-in-out .6s infinite alternate;
 }
 .login-box::before{
-  content:"";
-  position:absolute;top:0;left:0;right:0;height:1px;
-  background: linear-gradient(90deg, transparent, rgba(255,209,102,.9), transparent);
-  animation: shimmer 3s ease-in-out infinite;
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,209,102,.9),transparent);
+  animation:shimmer 3s ease-in-out infinite;
 }
-@keyframes shimmer {
-  0%,100% { opacity: .4; transform: translateX(-30%); }
-  50% { opacity: 1; transform: translateX(30%); }
+@keyframes shimmer{0%,100%{opacity:.4;transform:translateX(-30%)}50%{opacity:1;transform:translateX(30%)}}
+@keyframes loginIn{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes loginGlow{
+  from{box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.05) inset,0 0 30px rgba(255,180,60,.18)}
+  to{box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.05) inset,0 0 60px rgba(255,180,60,.42)}
 }
-
-@keyframes loginIn {
-  from { opacity: 0; transform: translateY(30px) scale(.94); }
-  to { opacity: 1; transform: none; }
+.login-box.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{0%,100%{transform:translateX(0)}15%,55%{transform:translateX(-10px)}35%,75%{transform:translateX(10px)}}
+.login-box.success{animation:successFlash .7s ease}
+@keyframes successFlash{
+  0%{box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 2px rgba(80,220,120,.9) inset,0 0 90px rgba(80,220,120,.9);border-color:rgba(80,220,120,.9)}
+  100%{box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 1px rgba(80,220,120,0) inset,0 0 0 rgba(80,220,120,0);border-color:rgba(80,220,120,.3)}
 }
-@keyframes loginGlow {
-  from {
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.75),
-      0 0 0 1px rgba(255,255,255,.05) inset,
-      0 0 30px rgba(255,180,60,.18);
-  }
-  to {
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.75),
-      0 0 0 1px rgba(255,255,255,.05) inset,
-      0 0 60px rgba(255,180,60,.42);
-  }
-}
-
-/* Shake khi sai */
-.login-box.shake {
-  animation: shake .5s cubic-bezier(.36,.07,.19,.97) both;
-}
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  15%,55% { transform: translateX(-10px); }
-  35%,75% { transform: translateX(10px); }
-}
-
-/* Success flash */
-.login-box.success {
-  animation: successFlash .7s ease;
-}
-@keyframes successFlash {
-  0% {
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.75),
-      0 0 0 2px rgba(80,220,120,.9) inset,
-      0 0 90px rgba(80,220,120,.9);
-    border-color: rgba(80,220,120,.9);
-  }
-  100% {
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.75),
-      0 0 0 1px rgba(80,220,120,0) inset,
-      0 0 0 rgba(80,220,120,0);
-    border-color: rgba(80,220,120,.3);
-  }
-}
-
-/* ====== LOGO ====== */
 .login-logo{text-align:center;margin-bottom:24px}
 .login-logo h1{
   font-size:22px;letter-spacing:3px;font-weight:800;margin-bottom:6px;
@@ -196,11 +106,7 @@ body::before{
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 3px 14px rgba(255,180,0,.4));
 }
-.login-logo p{
-  font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
-}
-
-/* ====== FIELD ====== */
+.login-logo p{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
 .login-field{margin-bottom:14px}
 .login-field label{
   display:block;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;
@@ -208,18 +114,13 @@ body::before{
 }
 .login-field input{
   width:100%;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:.5px;
-  color:#fff;background:rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.14);border-radius:12px;
-  padding:12px 14px;outline:none;
-  transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+  color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);
+  border-radius:12px;padding:12px 14px;outline:none;
+  transition:border-color .25s ease,box-shadow .25s ease,background .25s ease;
 }
 .login-field input:focus{
-  border-color:rgba(255,209,102,.7);
-  box-shadow:0 0 0 3px rgba(255,209,102,.14);
-  background:rgba(0,0,0,.5);
+  border-color:rgba(255,209,102,.7);box-shadow:0 0 0 3px rgba(255,209,102,.14);background:rgba(0,0,0,.5);
 }
-
-/* Password + eye */
 .pwd-wrap{position:relative}
 .pwd-wrap input{padding-right:46px}
 .pwd-toggle{
@@ -231,91 +132,41 @@ body::before{
 .pwd-toggle:hover{color:var(--gold);background:rgba(255,209,102,.1)}
 .pwd-toggle:active{transform:translateY(-50%) scale(.9)}
 .pwd-toggle svg{width:18px;height:18px;display:block}
-
-/* ====== BUTTON ====== */
 .login-btn{
-  position: relative;
-  overflow: hidden;
-  width:100%;margin-top:6px;
+  position:relative;overflow:hidden;width:100%;margin-top:6px;
   font-family:inherit;font-size:13.5px;font-weight:800;letter-spacing:2px;
   padding:14px;border-radius:12px;cursor:pointer;color:#241300;
-  background:linear-gradient(135deg,#ffd166,#ffb347);
-  border:none;
+  background:linear-gradient(135deg,#ffd166,#ffb347);border:none;
   box-shadow:0 8px 24px rgba(255,180,60,.35);
-  transition:transform .22s ease, box-shadow .22s ease;
+  transition:transform .22s ease,box-shadow .22s ease;
 }
-.login-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 12px 32px rgba(255,180,60,.55);
-}
-.login-btn:active{
-  transform:translateY(0) scale(.98);
-}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(255,180,60,.55)}
+.login-btn:active{transform:translateY(0) scale(.98)}
 .login-btn::before{
-  content:"";
-  position:absolute;top:0;left:-100%;
-  width:100%;height:100%;
+  content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
-  transition:left .7s cubic-bezier(.2,.9,.3,1);
-  pointer-events:none;
+  transition:left .7s cubic-bezier(.2,.9,.3,1);pointer-events:none;
 }
 .login-btn:hover::before{left:100%}
-
-.login-btn .btn-text{
-  position:relative;
-  z-index:1;
-  transition:opacity .2s ease;
-}
-
-/* Loading spinner */
-.login-btn.loading{
-  cursor: wait;
-}
-.login-btn.loading .btn-text{
-  opacity: 0;
-}
+.login-btn .btn-text{position:relative;z-index:1;transition:opacity .2s ease}
+.login-btn.loading{cursor:wait}
+.login-btn.loading .btn-text{opacity:0}
 .login-btn.loading::after{
-  content:"";
-  position:absolute;
-  top:50%;left:50%;
-  width:18px;height:18px;
-  margin:-9px 0 0 -9px;
-  border:2.5px solid rgba(36,19,0,.25);
-  border-top-color:#241300;
-  border-radius:50%;
-  animation:spin .6s linear infinite;
+  content:"";position:absolute;top:50%;left:50%;width:18px;height:18px;
+  margin:-9px 0 0 -9px;border:2.5px solid rgba(36,19,0,.25);
+  border-top-color:#241300;border-radius:50%;animation:spin .6s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ====== ERROR ====== */
 .login-error{
-  margin-top:12px;
-  font-size:12px;
-  letter-spacing:.5px;
-  color:#ff8b8b;
-  text-align:center;
-  min-height:16px;
-  opacity:0;
-  transform:translateY(-4px);
-  transition: opacity .3s ease, transform .3s ease;
+  margin-top:12px;font-size:12px;letter-spacing:.5px;color:#ff8b8b;
+  text-align:center;min-height:16px;opacity:0;transform:translateY(-4px);
+  transition:opacity .3s ease,transform .3s ease;
 }
-.login-error.show{
-  opacity:1;
-  transform: none;
-}
+.login-error.show{opacity:1;transform:none}
 
-@media(max-width:480px){
-  .login-box{padding:24px 20px 20px}
-  .login-logo h1{font-size:19px}
-  .login-logo p{font-size:10px}
-}
-
-/* ============================================================
-   ADMIN PANEL
-============================================================ */
+/* ============ ADMIN ============ */
 .top{
-  display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;
-  margin-bottom:20px;
+  display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:20px;
 }
 .top h1{
   font-size:clamp(18px,2.6vw,26px);letter-spacing:2px;font-weight:800;
@@ -325,33 +176,29 @@ body::before{
 }
 .sub{font-size:12.5px;color:var(--muted);letter-spacing:.6px;margin-top:6px}
 .tools{display:flex;flex-wrap:wrap;gap:8px}
-
 .btn{
   font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.6px;
-  padding:10px 15px;border-radius:10px;cursor:pointer;
-  color:var(--txt);background:rgba(255,255,255,.07);
-  border:1px solid var(--line);
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  transition:.2s ease;
+  padding:10px 15px;border-radius:10px;cursor:pointer;color:var(--txt);
+  background:rgba(255,255,255,.07);border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:.2s ease;
 }
 .btn:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .btn:active{transform:translateY(0) scale(.98)}
-.btn-gold{
-  background:linear-gradient(135deg,#ffd166,#ffb347);color:#241300;border-color:transparent;
-  box-shadow:0 6px 18px rgba(255,180,60,.32);
-}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-gold{background:linear-gradient(135deg,#ffd166,#ffb347);color:#241300;border-color:transparent;box-shadow:0 6px 18px rgba(255,180,60,.32)}
 .btn-gold:hover{box-shadow:0 10px 26px rgba(255,180,60,.48)}
 .btn-danger{color:#ffb4b4;border-color:rgba(255,93,93,.4);background:rgba(255,93,93,.12)}
 .btn-danger:hover{background:rgba(255,93,93,.22)}
+.btn-cloud{background:linear-gradient(135deg,#7ec8ff,#4d9aff);color:#001a33;border-color:transparent;box-shadow:0 6px 18px rgba(80,160,255,.35)}
+.btn-cloud:hover{box-shadow:0 10px 26px rgba(80,160,255,.5)}
+.btn-cloud.synced{background:linear-gradient(135deg,#7de0a1,#4dbf7c);color:#003d1a}
 
-/* ===== CARD ===== */
 .card{
   position:relative;
   background:linear-gradient(160deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.03) 100%);
   border:1px solid rgba(255,209,102,.25);border-radius:16px;
   padding:16px 18px 18px;margin-bottom:14px;
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
-  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);
   box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.04);
   animation:cardIn .3s ease;
 }
@@ -377,12 +224,7 @@ body::before{
 .mini:hover{background:rgba(255,255,255,.14)}
 .mini.del{color:#ffb4b4;border-color:rgba(255,93,93,.35);background:rgba(255,93,93,.12)}
 .mini.del:hover{background:rgba(255,93,93,.24)}
-
-/* ===== FIELD ===== */
-.lbl{
-  display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;
-  text-transform:uppercase;color:var(--muted);margin-bottom:7px;
-}
+.lbl{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
 .row{margin-bottom:14px}
 .txt{
   width:100%;font-family:inherit;font-size:13px;color:#fff;
@@ -396,31 +238,17 @@ body::before{
 .preview{
   margin-top:9px;height:100px;border-radius:10px;
   border:1px dashed rgba(255,255,255,.18);background:rgba(0,0,0,.3);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;
 }
 .preview img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-.preview:not(.has)::after{
-  content:"Chưa có ảnh";font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;
-}
+.preview:not(.has)::after{content:"Chưa có ảnh";font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px}
 .preview:not(.has) img{display:none}
-
-/* ===== BANNER BOX ===== */
-.banner-box{
-  margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;
-}
-.banner-box summary{
-  cursor:pointer;list-style:none;font-size:12px;font-weight:800;letter-spacing:1.4px;
-  color:var(--gold);padding:6px 0;user-select:none;
-}
+.banner-box{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}
+.banner-box summary{cursor:pointer;list-style:none;font-size:12px;font-weight:800;letter-spacing:1.4px;color:var(--gold);padding:6px 0;user-select:none}
 .banner-box summary::-webkit-details-marker{display:none}
-.banner-box summary::before{
-  content:"▸";display:inline-block;margin-right:9px;transition:.2s;
-}
+.banner-box summary::before{content:"▸";display:inline-block;margin-right:9px;transition:.2s}
 .banner-box[open] summary::before{transform:rotate(90deg)}
 .banner-box[open] summary{margin-bottom:12px}
-
-/* ===== ADD ===== */
 .add-card{
   display:flex;align-items:center;justify-content:center;gap:10px;
   width:100%;padding:20px;border-radius:16px;cursor:pointer;
@@ -428,13 +256,9 @@ body::before{
   color:var(--gold);background:rgba(255,209,102,.06);
   border:2px dashed rgba(255,209,102,.4);transition:.22s;
 }
-.add-card:hover{
-  background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.75);
-  transform:translateY(-1px);
-}
+.add-card:hover{background:rgba(255,209,102,.14);border-color:rgba(255,209,102,.75);transform:translateY(-1px)}
 .add-card .plus{font-size:22px;line-height:1}
 
-/* ===== TOAST ===== */
 .toast{
   position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);
   padding:12px 20px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:.5px;
@@ -445,38 +269,37 @@ body::before{
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.error{border-color:rgba(255,93,93,.6);color:#ffb4b4}
+.toast.success{border-color:rgba(80,220,120,.6);color:#a8ffc4}
 
-/* ===== MODAL ===== */
 .modal{
-  position:fixed;inset:0;z-index:9998;
-  display:flex;align-items:center;justify-content:center;padding:18px;
-  background:rgba(0,0,0,.75);
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(0,0,0,.75);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   opacity:0;visibility:hidden;transition:.25s;
 }
 .modal.show{opacity:1;visibility:visible}
 .modal-box{
   width:min(820px,100%);
   background:linear-gradient(160deg,rgba(20,28,48,.98),rgba(10,16,32,.98));
-  border:1px solid rgba(255,209,102,.3);border-radius:16px;
-  padding:22px;
+  border:1px solid rgba(255,209,102,.3);border-radius:16px;padding:22px;
   box-shadow:0 30px 80px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.04);
 }
-.modal-box h3{
-  font-size:15px;letter-spacing:1.8px;color:var(--gold);margin-bottom:10px;
-}
-.modal-box p{
-  font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px;
-}
+.modal-box h3{font-size:15px;letter-spacing:1.8px;color:var(--gold);margin-bottom:10px}
+.modal-box p{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.modal-box code{background:rgba(255,209,102,.15);color:#ffe28a;padding:2px 6px;border-radius:4px;font-size:11.5px}
 #linkOut{
-  width:100%;height:150px;resize:vertical;
+  width:100%;height:130px;resize:vertical;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
   font-size:11.5px;color:#cfe3ff;background:rgba(0,0,0,.5);
-  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;
-  word-break:break-all;
+  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;word-break:break-all;
 }
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-
+.modal-status{
+  padding:10px 14px;border-radius:10px;font-size:12.5px;letter-spacing:.5px;margin-bottom:12px;
+  background:rgba(80,220,120,.1);border:1px solid rgba(80,220,120,.4);color:#a8ffc4;
+}
+.modal-status.error{background:rgba(255,93,93,.1);border-color:rgba(255,93,93,.4);color:#ffb4b4}
+.modal-status.info{background:rgba(80,160,255,.1);border-color:rgba(80,160,255,.4);color:#a8d4ff}
 @media(max-width:520px){
   .top{align-items:flex-start}
   .tools{width:100%}
@@ -486,44 +309,28 @@ body::before{
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
 <div id="loginScreen">
   <div class="login-box">
-    <div class="login-logo">
-      <h1>QUẢN TRỊ VIÊN</h1>
-      <p>TGM VN • FREE FIRE</p>
-    </div>
-
+    <div class="login-logo"><h1>QUẢN TRỊ VIÊN</h1><p>TGM VN • FREE FIRE</p></div>
     <div class="login-field">
       <label for="loginUser">Tài khoản</label>
       <input type="text" id="loginUser" placeholder="Nhập tài khoản" autocomplete="username" spellcheck="false">
     </div>
-
     <div class="login-field">
       <label for="loginPass">Mật khẩu</label>
       <div class="pwd-wrap">
         <input type="password" id="loginPass" placeholder="Nhập mật khẩu" autocomplete="current-password">
         <button type="button" class="pwd-toggle" id="togglePwd" aria-label="Hiện mật khẩu">
-          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
-          </svg>
+          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
       </div>
     </div>
-
-    <button type="button" class="login-btn" id="loginBtn">
-      <span class="btn-text">ĐĂNG NHẬP</span>
-    </button>
+    <button type="button" class="login-btn" id="loginBtn"><span class="btn-text">ĐĂNG NHẬP</span></button>
     <p class="login-error" id="loginError"></p>
   </div>
 </div>
 
-<!-- ================= ADMIN PANEL ================= -->
 <div id="adminPanel">
   <div class="top">
     <div>
@@ -532,6 +339,7 @@ body::before{
     </div>
     <div class="tools">
       <button class="btn btn-gold" id="btnAdd">+ Tạo sự kiện</button>
+      <button class="btn btn-cloud" id="btnCloud">☁ Đồng bộ Cloud</button>
       <button class="btn" id="btnLink">🔗 Tạo Link User</button>
       <button class="btn" id="btnCopy">📋 Copy JSON</button>
       <button class="btn" id="btnExport">⬇ Xuất data.json</button>
@@ -542,15 +350,14 @@ body::before{
       <input type="file" id="fileInput" accept=".json,application/json" hidden>
     </div>
   </div>
-
   <main id="list"></main>
 </div>
 
-<!-- ================= MODAL LINK ================= -->
 <div class="modal" id="modal">
   <div class="modal-box">
-    <h3>TẠO LINK USER</h3>
-    <p>Dữ liệu được nhúng trực tiếp trong link (dạng <code>?d=...</code>). Gửi link này cho người dùng để họ thấy đúng nội dung bạn đã tạo.</p>
+    <h3 id="modalTitle">TẠO LINK USER</h3>
+    <div class="modal-status info" id="modalStatus" style="display:none"></div>
+    <p id="modalDesc"></p>
     <textarea id="linkOut" readonly></textarea>
     <div class="modal-actions">
       <button class="btn btn-gold" id="copyLink">Sao chép</button>
@@ -567,17 +374,12 @@ body::before{
   'use strict';
 
   /* ============================================================
-     PHẦN XÁC THỰC ĐĂNG NHẬP
+     AUTH
   ============================================================ */
   var SESSION_KEY = 'tgmvn_admin_session_v1';
-
-  function _d64(parts) {
-    try { return atob(parts.join('')); } catch (e) { return ''; }
-  }
-  var _U64 = ['QXpl','cnN0','IEZy','ZWUg','Rmly','ZQ=='].join('');
-  var _P64 = ['QXpl','cnN0','RnJl','ZUZp','cmUx','MjI='].join('');
-  var AUTH_USER = _d64([_U64.slice(0,8), _U64.slice(8,16), _U64.slice(16)]);
-  var AUTH_PASS = _d64([_P64.slice(0,8), _P64.slice(8,16), _P64.slice(16)]);
+  function _d64(s){ try{ return atob(s); }catch(e){ return ''; } }
+  var AUTH_USER = _d64('QXplcnN0IEZyZWUgRmlyZQ==');       // Azerst Free Fire
+  var AUTH_PASS = _d64('QXplcnN0RnJlZUZpcmUxMjI=');        // AzerstFreeFire122
 
   var loginScreen = document.getElementById('loginScreen');
   var adminPanel  = document.getElementById('adminPanel');
@@ -590,7 +392,6 @@ body::before{
   var eyeOpen     = togglePwd.querySelector('.eye-open');
   var eyeOff      = togglePwd.querySelector('.eye-off');
 
-  // Toggle hiện/ẩn mật khẩu
   var pwdVisible = false;
   togglePwd.addEventListener('click', function () {
     pwdVisible = !pwdVisible;
@@ -617,12 +418,7 @@ body::before{
     adminPanel.classList.add('active');
     setTimeout(function () {
       if (window.__adminBoot) window.__adminBoot();
-      var t = document.getElementById('toast');
-      if (t) {
-        t.textContent = '✓ Đăng nhập thành công';
-        t.classList.add('show');
-        setTimeout(function () { t.classList.remove('show'); }, 2000);
-      }
+      toast('✓ Đăng nhập thành công', 'success');
     }, 120);
   }
 
@@ -635,29 +431,22 @@ body::before{
   function tryLogin() {
     var u = (loginUser.value || '').trim();
     var p = loginPass.value || '';
-
     if (!u || !p) {
       showError('Vui lòng nhập đủ tài khoản và mật khẩu');
       loginBox.classList.add('shake');
       setTimeout(function () { loginBox.classList.remove('shake'); }, 520);
       return;
     }
-
     clearError();
     loginBtn.classList.add('loading');
     loginBtn.disabled = true;
-
     setTimeout(function () {
       loginBtn.classList.remove('loading');
       loginBtn.disabled = false;
-
       if (u === AUTH_USER && p === AUTH_PASS) {
         loginBox.classList.add('success');
         try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
-        setTimeout(function () {
-          loginBox.classList.remove('success');
-          showPanel();
-        }, 550);
+        setTimeout(function () { loginBox.classList.remove('success'); showPanel(); }, 550);
       } else {
         showError('Sai tài khoản hoặc mật khẩu');
         loginBox.classList.add('shake');
@@ -667,79 +456,49 @@ body::before{
       }
     }, 550);
   }
-
   loginBtn.addEventListener('click', tryLogin);
-  loginPass.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') tryLogin();
-  });
-  loginUser.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') loginPass.focus();
-  });
+  loginPass.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryLogin(); });
+  loginUser.addEventListener('keydown', function (e) { if (e.key === 'Enter') loginPass.focus(); });
 
   document.getElementById('btnLogout').addEventListener('click', function () {
     try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
-    loginUser.value = '';
-    loginPass.value = '';
-    pwdVisible = false;
-    loginPass.type = 'password';
-    eyeOpen.style.display = '';
-    eyeOff.style.display = 'none';
+    loginUser.value = ''; loginPass.value = '';
+    pwdVisible = false; loginPass.type = 'password';
+    eyeOpen.style.display = ''; eyeOff.style.display = 'none';
     clearError();
     showLogin();
   });
 
   /* ============================================================
-     PHẦN QUẢN TRỊ
+     DATA
   ============================================================ */
-  var LS_KEY   = 'tgmvn_ff_admin_v1';
-  var USER_URL = 'https://azerst-freefire.vercel.app/';
+  var LS_KEY    = 'tgmvn_ff_admin_v1';
+  var CLOUD_KEY = 'tgmvn_ff_cloud_v1';
+  var CLOUD_API = 'https://jsonblob.com/api/jsonBlob';
+  var USER_URL  = 'https://azerst-freefire.vercel.app/';
 
   var DEFAULT_STATE = {
     siteTitle: 'TAB SỰ KIỆN | Trang chủ',
     footer: '© Azerst 2026 – All rights reserved',
     events: [
-      {
-        id: '1', name: 'Sự kiện 1',
-        tag: 'MÀN TRÌNH DIỄN KINH DỊ',
-        logo: 'https://azerst-image-vn.vercel.app/images/8F9d2wz2w.png',
-        tab:  'https://azerst-image-vn.vercel.app/images/wRZwa1Bqv.png',
-        bg:   'https://azerst-image-vn.vercel.app/images/orGmr7jOS.png',
-        bannerLabel: 'TÀ LINH ĐỔ BỘ',
-        banners: {
-          '16-9':     'https://azerst-image-vn.vercel.app/images/eHDvjfDHK.jpg',
-          'portrait': 'https://azerst-image-vn.vercel.app/images/z1R4FBio5.png',
-          '256':      'https://azerst-image-vn.vercel.app/images/GQi503B4g.png',
-          '512':      'https://azerst-image-vn.vercel.app/images/UlyJpvmBm.png'
-        }
-      },
-      {
-        id: '2', name: 'Sự kiện 2',
-        tag: 'MÓNG VUỐT TAI HOẠ',
-        logo: 'https://azerst-image-vn.vercel.app/images/m4jwa7iMn.png',
-        tab:  'https://azerst-image-vn.vercel.app/images/Xl6yeAKFU.png',
-        bg:   'https://azerst-image-vn.vercel.app/images/QOoBqwG3R.png',
-        bannerLabel: 'MÀN TRÌNH DIỄN KINH DỊ',
-        banners: {
-          '16-9':     'https://azerst-image-vn.vercel.app/images/64SsEq3sh.jpg',
-          'portrait': 'https://azerst-image-vn.vercel.app/images/NkS5Uib75.png',
-          '256':      'https://azerst-image-vn.vercel.app/images/4q4A1mvDU.png',
-          '512':      'https://azerst-image-vn.vercel.app/images/dmbomVVfA.png'
-        }
-      },
-      {
-        id: '3', name: 'Sự kiện 3',
-        tag: 'HÀNH ĐỘNG HALLOWEEN',
-        logo: 'https://azerst-image-vn.vercel.app/images/mw5xbjnMj.png',
-        tab:  'https://azerst-image-vn.vercel.app/images/GsqjGtxDt.png',
-        bg:   'https://azerst-image-vn.vercel.app/images/rGM5HmhEG.png',
-        bannerLabel: 'MÓNG VUỐT TAI HỌA',
-        banners: {
-          '16-9':     'https://azerst-image-vn.vercel.app/images/hTbfK9XRk.png',
-          'portrait': 'https://azerst-image-vn.vercel.app/images/MrGWGnY3e.png',
-          '256':      'https://azerst-image-vn.vercel.app/images/9pWreeN5O.png',
-          '512':      'https://azerst-image-vn.vercel.app/images/UUOllEYiO.png'
-        }
-      }
+      { id:'1', name:'Sự kiện 1', tag:'MÀN TRÌNH DIỄN KINH DỊ',
+        logo:'https://azerst-image-vn.vercel.app/images/8F9d2wz2w.png',
+        tab:'https://azerst-image-vn.vercel.app/images/wRZwa1Bqv.png',
+        bg:'https://azerst-image-vn.vercel.app/images/orGmr7jOS.png',
+        bannerLabel:'TÀ LINH ĐỔ BỘ',
+        banners:{'16-9':'https://azerst-image-vn.vercel.app/images/eHDvjfDHK.jpg','portrait':'https://azerst-image-vn.vercel.app/images/z1R4FBio5.png','256':'https://azerst-image-vn.vercel.app/images/GQi503B4g.png','512':'https://azerst-image-vn.vercel.app/images/UlyJpvmBm.png'} },
+      { id:'2', name:'Sự kiện 2', tag:'MÓNG VUỐT TAI HOẠ',
+        logo:'https://azerst-image-vn.vercel.app/images/m4jwa7iMn.png',
+        tab:'https://azerst-image-vn.vercel.app/images/Xl6yeAKFU.png',
+        bg:'https://azerst-image-vn.vercel.app/images/QOoBqwG3R.png',
+        bannerLabel:'MÀN TRÌNH DIỄN KINH DỊ',
+        banners:{'16-9':'https://azerst-image-vn.vercel.app/images/64SsEq3sh.jpg','portrait':'https://azerst-image-vn.vercel.app/images/NkS5Uib75.png','256':'https://azerst-image-vn.vercel.app/images/4q4A1mvDU.png','512':'https://azerst-image-vn.vercel.app/images/dmbomVVfA.png'} },
+      { id:'3', name:'Sự kiện 3', tag:'HÀNH ĐỘNG HALLOWEEN',
+        logo:'https://azerst-image-vn.vercel.app/images/mw5xbjnMj.png',
+        tab:'https://azerst-image-vn.vercel.app/images/GsqjGtxDt.png',
+        bg:'https://azerst-image-vn.vercel.app/images/rGM5HmhEG.png',
+        bannerLabel:'MÓNG VUỐT TAI HỌA',
+        banners:{'16-9':'https://azerst-image-vn.vercel.app/images/hTbfK9XRk.png','portrait':'https://azerst-image-vn.vercel.app/images/MrGWGnY3e.png','256':'https://azerst-image-vn.vercel.app/images/9pWreeN5O.png','512':'https://azerst-image-vn.vercel.app/images/UUOllEYiO.png'} }
     ]
   };
 
@@ -749,20 +508,18 @@ body::before{
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
     });
   }
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   var toastTimer = null;
-  function toast(msg) {
+  function toast(msg, type) {
     toastEl.textContent = msg;
-    toastEl.classList.add('show');
+    toastEl.className = 'toast show' + (type ? ' ' + type : '');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2600);
+    toastTimer = setTimeout(function () { toastEl.className = 'toast'; }, 2800);
   }
 
   function b64urlEncode(str) {
@@ -773,18 +530,12 @@ body::before{
   }
 
   function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text);
-    }
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
     return new Promise(function (resolve, reject) {
       var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); resolve(); }
-      catch (e) { reject(e); }
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); resolve(); } catch (e) { reject(e); }
       document.body.removeChild(ta);
     });
   }
@@ -797,18 +548,15 @@ body::before{
     d.events = d.events.map(function (ev, i) {
       ev = ev || {};
       return {
-        id:          ev.id || uid(),
-        name:        ev.name || ('Sự kiện ' + (i + 1)),
-        tag:         ev.tag || '',
-        logo:        ev.logo || '',
-        tab:         ev.tab || '',
-        bg:          ev.bg || '',
+        id: ev.id || uid(),
+        name: ev.name || ('Sự kiện ' + (i + 1)),
+        tag: ev.tag || '', logo: ev.logo || '', tab: ev.tab || '', bg: ev.bg || '',
         bannerLabel: ev.bannerLabel || '',
         banners: {
-          '16-9':     (ev.banners && ev.banners['16-9'])     || '',
-          'portrait': (ev.banners && ev.banners['portrait']) || '',
-          '256':      (ev.banners && ev.banners['256'])      || '',
-          '512':      (ev.banners && ev.banners['512'])      || ''
+          '16-9':(ev.banners && ev.banners['16-9'])||'',
+          'portrait':(ev.banners && ev.banners['portrait'])||'',
+          '256':(ev.banners && ev.banners['256'])||'',
+          '512':(ev.banners && ev.banners['512'])||''
         }
       };
     });
@@ -833,62 +581,123 @@ body::before{
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+      markUnsynced();
     }, 180);
   }
 
+  /* ============================================================
+     CLOUD SYNC
+  ============================================================ */
+  function getCloud() {
+    try { return JSON.parse(localStorage.getItem(CLOUD_KEY)) || null; } catch (e) { return null; }
+  }
+  function setCloud(info) {
+    try { localStorage.setItem(CLOUD_KEY, JSON.stringify(info)); } catch (e) {}
+  }
+  function markUnsynced() {
+    var btn = document.getElementById('btnCloud');
+    if (!btn) return;
+    btn.classList.remove('synced');
+    btn.textContent = '☁ Đồng bộ Cloud';
+  }
+  function markSynced() {
+    var btn = document.getElementById('btnCloud');
+    if (!btn) return;
+    btn.classList.add('synced');
+    btn.textContent = '✓ Đã đồng bộ';
+  }
+
+  function syncToCloud() {
+    return new Promise(function (resolve, reject) {
+      var info = getCloud();
+      var payload = JSON.stringify(state);
+      var btn = document.getElementById('btnCloud');
+      btn.disabled = true;
+      btn.textContent = '⏳ Đang đồng bộ...';
+
+      var reqPromise;
+      if (info && info.id) {
+        reqPromise = fetch(CLOUD_API + '/' + info.id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        }).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return { id: info.id, action: 'update' };
+        });
+      } else {
+        reqPromise = fetch(CLOUD_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        }).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          var loc = r.headers.get('Location') || r.headers.get('location');
+          if (!loc) throw new Error('Server không trả Location');
+          var id = loc.split('/').pop();
+          return { id: id, action: 'create' };
+        });
+      }
+
+      reqPromise
+        .then(function (res) {
+          setCloud({ id: res.id, at: Date.now() });
+          btn.disabled = false;
+          markSynced();
+          resolve(res);
+        })
+        .catch(function (err) {
+          btn.disabled = false;
+          btn.textContent = '☁ Đồng bộ Cloud';
+          reject(err);
+        });
+    });
+  }
+
+  /* ============================================================
+     RENDER
+  ============================================================ */
   function urlField(field, label, value) {
     value = value || '';
-    return '' +
-      '<div class="field">' +
-        '<label class="lbl">' + esc(label) + '</label>' +
-        '<div class="input-row">' +
-          '<input class="txt url" data-field="' + esc(field) + '" value="' + esc(value) + '" placeholder="https://...">' +
-          '<button type="button" class="mini" data-clear="' + esc(field) + '">Xóa</button>' +
-        '</div>' +
-        '<div class="preview' + (value ? ' has' : '') + '" data-preview="' + esc(field) + '">' +
-          '<img src="' + esc(value) + '" alt="" onerror="this.removeAttribute(\'src\')">' +
-        '</div>' +
-      '</div>';
+    return '<div class="field">' +
+      '<label class="lbl">' + esc(label) + '</label>' +
+      '<div class="input-row">' +
+        '<input class="txt url" data-field="' + esc(field) + '" value="' + esc(value) + '" placeholder="https://...">' +
+        '<button type="button" class="mini" data-clear="' + esc(field) + '">Xóa</button>' +
+      '</div>' +
+      '<div class="preview' + (value ? ' has' : '') + '" data-preview="' + esc(field) + '">' +
+        '<img src="' + esc(value) + '" alt="" onerror="this.removeAttribute(\'src\')">' +
+      '</div></div>';
   }
 
   function cardHTML(ev, i) {
-    return '' +
-    '<section class="card" data-id="' + esc(ev.id) + '">' +
+    return '<section class="card" data-id="' + esc(ev.id) + '">' +
       '<div class="card-head">' +
         '<span class="badge">#' + (i + 1) + '</span>' +
-        '<input class="name-input" data-field="name" value="' + esc(ev.name) + '" placeholder="Tên sự kiện (hiện trên nút)">' +
+        '<input class="name-input" data-field="name" value="' + esc(ev.name) + '" placeholder="Tên sự kiện">' +
         '<div class="acts">' +
-          '<button type="button" class="mini" data-act="up" title="Lên">↑</button>' +
-          '<button type="button" class="mini" data-act="down" title="Xuống">↓</button>' +
-          '<button type="button" class="mini del" data-act="del" title="Xóa">✕ Xóa</button>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="row">' +
-        '<label class="lbl">Tag chữ đỏ (hiển thị phía trên)</label>' +
-        '<input class="txt" data-field="tag" value="' + esc(ev.tag) + '" placeholder="VD: MÀN TRÌNH DIỄN KINH DỊ">' +
-      '</div>' +
-
+          '<button type="button" class="mini" data-act="up">↑</button>' +
+          '<button type="button" class="mini" data-act="down">↓</button>' +
+          '<button type="button" class="mini del" data-act="del">✕ Xóa</button>' +
+        '</div></div>' +
+      '<div class="row"><label class="lbl">Tag chữ đỏ</label>' +
+        '<input class="txt" data-field="tag" value="' + esc(ev.tag) + '"></div>' +
       '<div class="grid">' +
         urlField('logo', 'TITLE SỰ KIỆN (logo)', ev.logo) +
         urlField('tab',  'TAB SỰ KIỆN', ev.tab) +
         urlField('bg',   'BACKGROUND SỰ KIỆN', ev.bg) +
       '</div>' +
-
       '<details class="banner-box">' +
-        '<summary>BANNER SỰ KIỆN (trang BANNER)</summary>' +
-        '<div class="row">' +
-          '<label class="lbl">Tiêu đề banner</label>' +
-          '<input class="txt" data-field="bannerLabel" value="' + esc(ev.bannerLabel) + '" placeholder="VD: TÀ LINH ĐỔ BỘ">' +
-        '</div>' +
+        '<summary>BANNER SỰ KIỆN</summary>' +
+        '<div class="row"><label class="lbl">Tiêu đề banner</label>' +
+          '<input class="txt" data-field="bannerLabel" value="' + esc(ev.bannerLabel) + '"></div>' +
         '<div class="grid">' +
-          urlField('banner.16-9',     'Banner 16:9',     ev.banners['16-9']) +
-          urlField('banner.portrait', 'Banner 436×606',  ev.banners['portrait']) +
-          urlField('banner.256',      'Banner 256×107',  ev.banners['256']) +
-          urlField('banner.512',      'Banner 512×182',  ev.banners['512']) +
+          urlField('banner.16-9',     'Banner 16:9',    ev.banners['16-9']) +
+          urlField('banner.portrait', 'Banner 436×606', ev.banners['portrait']) +
+          urlField('banner.256',      'Banner 256×107', ev.banners['256']) +
+          urlField('banner.512',      'Banner 512×182', ev.banners['512']) +
         '</div>' +
-      '</details>' +
-    '</section>';
+      '</details></section>';
   }
 
   function render() {
@@ -897,6 +706,7 @@ body::before{
     html += '<button type="button" class="add-card" id="addCard"><span class="plus">+</span> TẠO DANH SÁCH SỰ KIỆN</button>';
     list.innerHTML = html;
     updateDesc();
+    if (getCloud()) markSynced();
   }
 
   function updateDesc() {
@@ -907,34 +717,21 @@ body::before{
     if (!container) return;
     var img = container.querySelector('img');
     if (!img) return;
-    if (url) {
-      img.src = url;
-      container.classList.add('has');
-    } else {
-      img.removeAttribute('src');
-      container.classList.remove('has');
-    }
+    if (url) { img.src = url; container.classList.add('has'); }
+    else { img.removeAttribute('src'); container.classList.remove('has'); }
   }
 
   list.addEventListener('input', function (e) {
-    var el = e.target;
-    var card = el.closest('.card');
+    var el = e.target, card = el.closest('.card');
     if (!card) return;
     var ev = state.events.find(function (x) { return x.id === card.dataset.id; });
     if (!ev) return;
     var f = el.dataset.field;
     if (!f) return;
     var v = el.value;
-
-    if (f.indexOf('banner.') === 0) {
-      ev.banners[f.slice(7)] = v.trim();
-    } else {
-      ev[f] = v;
-    }
-
-    if (el.classList.contains('url')) {
-      setPreview(card.querySelector('[data-preview="' + f + '"]'), v.trim());
-    }
+    if (f.indexOf('banner.') === 0) ev.banners[f.slice(7)] = v.trim();
+    else ev[f] = v;
+    if (el.classList.contains('url')) setPreview(card.querySelector('[data-preview="' + f + '"]'), v.trim());
     save();
   });
 
@@ -943,32 +740,24 @@ body::before{
     if (clr) {
       var card0 = clr.closest('.card');
       var input = card0.querySelector('[data-field="' + clr.dataset.clear + '"]');
-      if (input) {
-        input.value = '';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-      }
+      if (input) { input.value = ''; input.dispatchEvent(new Event('input', { bubbles: true })); }
       return;
     }
-
     if (e.target.closest('#addCard')) { addEvent(); return; }
-
     var act = e.target.closest('[data-act]');
     if (!act) return;
     var card = act.closest('.card');
     if (!card) return;
     var idx = state.events.findIndex(function (x) { return x.id === card.dataset.id; });
     if (idx < 0) return;
-
     var a = act.dataset.act;
     if (a === 'up' && idx > 0) {
       var t1 = state.events[idx - 1];
-      state.events[idx - 1] = state.events[idx];
-      state.events[idx] = t1;
+      state.events[idx - 1] = state.events[idx]; state.events[idx] = t1;
       save(); render();
     } else if (a === 'down' && idx < state.events.length - 1) {
       var t2 = state.events[idx + 1];
-      state.events[idx + 1] = state.events[idx];
-      state.events[idx] = t2;
+      state.events[idx + 1] = state.events[idx]; state.events[idx] = t2;
       save(); render();
     } else if (a === 'del') {
       if (state.events.length <= 1) { toast('Phải giữ lại ít nhất 1 sự kiện'); return; }
@@ -981,12 +770,10 @@ body::before{
   function addEvent() {
     var n = state.events.length + 1;
     state.events.push({
-      id: uid(),
-      name: 'Sự kiện ' + n,
-      tag: '',
-      logo: '', tab: '', bg: '',
+      id: uid(), name: 'Sự kiện ' + n,
+      tag: '', logo: '', tab: '', bg: '',
       bannerLabel: '',
-      banners: { '16-9': '', 'portrait': '', '256': '', '512': '' }
+      banners: { '16-9':'', 'portrait':'', '256':'', '512':'' }
     });
     save(); render();
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -998,19 +785,16 @@ body::before{
   document.getElementById('btnCopy').addEventListener('click', function () {
     copyText(JSON.stringify(state, null, 2))
       .then(function () { toast('Đã copy JSON'); })
-      .catch(function () { toast('Không copy được, hãy dùng Xuất data.json'); });
+      .catch(function () { toast('Không copy được', 'error'); });
   });
 
   document.getElementById('btnExport').addEventListener('click', function () {
     var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'data.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = URL.createObjectURL(blob); a.download = 'data.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1200);
-    toast('Đã xuất data.json — upload cùng thư mục index.html của User');
+    toast('Đã xuất data.json');
   });
 
   var fileInput = document.getElementById('fileInput');
@@ -1026,42 +810,99 @@ body::before{
         state = normalize(d);
         save(); render();
         toast('Đã nhập ' + state.events.length + ' sự kiện');
-      } catch (err) {
-        toast('File JSON không hợp lệ');
-      }
+      } catch (err) { toast('File JSON không hợp lệ', 'error'); }
     };
     reader.readAsText(f);
     fileInput.value = '';
   });
 
-  var modal   = document.getElementById('modal');
-  var linkOut = document.getElementById('linkOut');
+  document.getElementById('btnCloud').addEventListener('click', function () {
+    toast('Đang đồng bộ lên cloud...');
+    syncToCloud()
+      .then(function (res) {
+        var link = USER_URL + '?id=' + res.id;
+        showModal({
+          title: 'ĐỒNG BỘ CLOUD THÀNH CÔNG',
+          status: { text: '✓ Cloud ID: ' + res.id + ' • ' + (res.action === 'create' ? 'Tạo mới' : 'Cập nhật'), type: 'info' },
+          desc: 'Dữ liệu đã đẩy lên cloud. User sẽ tự động tải về khi vào link bên dưới.<br><br>' +
+                '<b>Để User tự cập nhật từ link gốc:</b> tạo file <code>cloud.json</code> trên repo User với nội dung:<br>' +
+                '<code>{"id":"' + res.id + '"}</code>',
+          link: link
+        });
+        toast('✓ Đồng bộ Cloud thành công', 'success');
+      })
+      .catch(function (err) {
+        toast('✗ Lỗi đồng bộ: ' + err.message, 'error');
+      });
+  });
 
-  function buildCleanLink() {
-    var payload = b64urlEncode(JSON.stringify(state));
-    return USER_URL + '?d=' + payload;
+  var modal       = document.getElementById('modal');
+  var modalTitle  = document.getElementById('modalTitle');
+  var modalDesc   = document.getElementById('modalDesc');
+  var modalStatus = document.getElementById('modalStatus');
+  var linkOut     = document.getElementById('linkOut');
+
+  function showModal(opts) {
+    modalTitle.textContent = opts.title || 'THÔNG TIN';
+    modalDesc.innerHTML = opts.desc || '';
+    if (opts.status) {
+      modalStatus.textContent = opts.status.text;
+      modalStatus.className = 'modal-status ' + (opts.status.type || 'info');
+      modalStatus.style.display = '';
+    } else {
+      modalStatus.style.display = 'none';
+    }
+    linkOut.value = opts.link || '';
+    modal.classList.add('show');
   }
 
   document.getElementById('btnLink').addEventListener('click', function () {
-    linkOut.value = buildCleanLink();
-    modal.classList.add('show');
-    if (linkOut.value.length > 4000) {
-      toast('⚠ Link dài (' + linkOut.value.length + ' ký tự), nên dùng data.json');
-    }
+    syncToCloud()
+      .then(function (res) {
+        var cloudLink = USER_URL + '?id=' + res.id;
+        var embedLink = USER_URL + '?d=' + b64urlEncode(JSON.stringify(state));
+        showModal({
+          title: 'LINK USER',
+          status: { text: '✓ Đã đồng bộ cloud • ID: ' + res.id, type: 'info' },
+          desc: '<b>Link Cloud (khuyến nghị, tự cập nhật):</b><br>' +
+                '<code>' + cloudLink + '</code><br><br>' +
+                '<b>Link Embed (dự phòng, cố định):</b> bên dưới dòng thứ 2',
+          link: cloudLink + '\n\n' + embedLink
+        });
+      })
+      .catch(function (err) {
+        var embedLink = USER_URL + '?d=' + b64urlEncode(JSON.stringify(state));
+        showModal({
+          title: 'LINK USER (EMBED)',
+          status: { text: '⚠ Không sync cloud: ' + err.message + ' — dùng link embed', type: 'error' },
+          desc: 'Link embed chứa dữ liệu trực tiếp:',
+          link: embedLink
+        });
+      });
   });
 
   document.getElementById('btnPreview').addEventListener('click', function () {
-    window.open(buildCleanLink(), '_blank');
+    var info = getCloud();
+    if (info && info.id) {
+      window.open(USER_URL + '?id=' + info.id, '_blank');
+    } else {
+      window.open(USER_URL + '?d=' + b64urlEncode(JSON.stringify(state)), '_blank');
+    }
   });
 
   document.getElementById('copyLink').addEventListener('click', function () {
-    copyText(linkOut.value)
-      .then(function () { toast('Đã copy link User'); })
-      .catch(function () { linkOut.select(); toast('Hãy nhấn Ctrl+C để copy'); });
+    var text = linkOut.value;
+    if (!text) return;
+    var first = text.split('\n')[0];
+    copyText(first)
+      .then(function () { toast('Đã copy link', 'success'); })
+      .catch(function () { linkOut.select(); toast('Hãy nhấn Ctrl+C', 'error'); });
   });
 
   document.getElementById('openLink').addEventListener('click', function () {
-    if (linkOut.value) window.open(linkOut.value, '_blank');
+    if (!linkOut.value) return;
+    var first = linkOut.value.split('\n')[0];
+    window.open(first, '_blank');
   });
 
   document.getElementById('closeModal').addEventListener('click', function () {
@@ -1078,9 +919,6 @@ body::before{
     toast('Đã đặt lại dữ liệu');
   });
 
-  /* ============================================================
-     BOOT ADMIN
-  ============================================================ */
   var booted = false;
   window.__adminBoot = function () {
     if (booted) return;
@@ -1088,12 +926,8 @@ body::before{
     render();
   };
 
-  /* ============================================================
-     KHỞI ĐỘNG - kiểm tra session
-  ============================================================ */
   var hasSession = false;
   try { hasSession = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
-
   if (hasSession) {
     loginScreen.classList.remove('active');
     adminPanel.classList.add('active');
@@ -1106,4 +940,4 @@ body::before{
 })();
 </script>
 </body>
-</html>
+      </html>
