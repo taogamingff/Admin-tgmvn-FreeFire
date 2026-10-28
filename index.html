@@ -72,7 +72,6 @@ body::before{
 }
 @keyframes orbA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-4vw) scale(1.2)}}
 @keyframes orbB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-8vw,6vw) scale(1.15)}}
-
 .login-box{
   position:relative;z-index:1;width:min(420px,100%);
   background:linear-gradient(160deg,rgba(255,255,255,.12) 0%,rgba(255,255,255,.03) 100%);
@@ -189,9 +188,6 @@ body::before{
 .btn-gold:hover{box-shadow:0 10px 26px rgba(255,180,60,.48)}
 .btn-danger{color:#ffb4b4;border-color:rgba(255,93,93,.4);background:rgba(255,93,93,.12)}
 .btn-danger:hover{background:rgba(255,93,93,.22)}
-.btn-cloud{background:linear-gradient(135deg,#7ec8ff,#4d9aff);color:#001a33;border-color:transparent;box-shadow:0 6px 18px rgba(80,160,255,.35)}
-.btn-cloud:hover{box-shadow:0 10px 26px rgba(80,160,255,.5)}
-.btn-cloud.synced{background:linear-gradient(135deg,#7de0a1,#4dbf7c);color:#003d1a}
 
 .card{
   position:relative;
@@ -288,10 +284,10 @@ body::before{
 .modal-box p{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
 .modal-box code{background:rgba(255,209,102,.15);color:#ffe28a;padding:2px 6px;border-radius:4px;font-size:11.5px}
 #linkOut{
-  width:100%;height:130px;resize:vertical;
+  width:100%;height:180px;resize:vertical;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:11.5px;color:#cfe3ff;background:rgba(0,0,0,.5);
-  border:1px solid var(--line);border-radius:10px;padding:10px;outline:none;word-break:break-all;
+  font-size:12px;color:#cfe3ff;background:rgba(0,0,0,.5);
+  border:1px solid var(--line);border-radius:10px;padding:12px;outline:none;word-break:break-all;
 }
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
 .modal-status{
@@ -339,15 +335,10 @@ body::before{
     </div>
     <div class="tools">
       <button class="btn btn-gold" id="btnAdd">+ Tạo sự kiện</button>
-      <button class="btn btn-cloud" id="btnCloud">☁ Đồng bộ Cloud</button>
-      <button class="btn" id="btnLink">🔗 Tạo Link User</button>
-      <button class="btn" id="btnCopy">📋 Copy JSON</button>
-      <button class="btn" id="btnExport">⬇ Xuất data.json</button>
-      <button class="btn" id="btnImport">⬆ Nhập JSON</button>
+      <button class="btn btn-gold" id="btnLink">🔗 Tạo Link User</button>
       <button class="btn" id="btnPreview">👁 Xem trước</button>
       <button class="btn btn-danger" id="btnReset">↺ Đặt lại</button>
       <button class="btn btn-danger" id="btnLogout">⎋ Đăng xuất</button>
-      <input type="file" id="fileInput" accept=".json,application/json" hidden>
     </div>
   </div>
   <main id="list"></main>
@@ -355,13 +346,13 @@ body::before{
 
 <div class="modal" id="modal">
   <div class="modal-box">
-    <h3 id="modalTitle">TẠO LINK USER</h3>
+    <h3 id="modalTitle">LINK USER</h3>
     <div class="modal-status info" id="modalStatus" style="display:none"></div>
     <p id="modalDesc"></p>
     <textarea id="linkOut" readonly></textarea>
     <div class="modal-actions">
-      <button class="btn btn-gold" id="copyLink">Sao chép</button>
-      <button class="btn" id="openLink">Mở link</button>
+      <button class="btn btn-gold" id="copyLink">Sao chép tất cả</button>
+      <button class="btn" id="openLink">Mở link event1</button>
       <button class="btn" id="closeModal">Đóng</button>
     </div>
   </div>
@@ -373,13 +364,11 @@ body::before{
 (function () {
   'use strict';
 
-  /* ============================================================
-     AUTH
-  ============================================================ */
+  /* ============ AUTH ============ */
   var SESSION_KEY = 'tgmvn_admin_session_v1';
   function _d64(s){ try{ return atob(s); }catch(e){ return ''; } }
-  var AUTH_USER = _d64('QXplcnN0IEZyZWUgRmlyZQ==');       // Azerst Free Fire
-  var AUTH_PASS = _d64('QXplcnN0RnJlZUZpcmUxMjI=');        // AzerstFreeFire122
+  var AUTH_USER = _d64('QXplcnN0IEZyZWUgRmlyZQ==');   // Azerst Free Fire
+  var AUTH_PASS = _d64('QXplcnN0RnJlZUZpcmUxMjI=');    // AzerstFreeFire122
 
   var loginScreen = document.getElementById('loginScreen');
   var adminPanel  = document.getElementById('adminPanel');
@@ -412,7 +401,6 @@ body::before{
     loginError.classList.remove('show');
     loginError.textContent = '';
   }
-
   function showPanel() {
     loginScreen.classList.remove('active');
     adminPanel.classList.add('active');
@@ -421,13 +409,11 @@ body::before{
       toast('✓ Đăng nhập thành công', 'success');
     }, 120);
   }
-
   function showLogin() {
     adminPanel.classList.remove('active');
     loginScreen.classList.add('active');
     setTimeout(function () { loginUser.focus(); }, 450);
   }
-
   function tryLogin() {
     var u = (loginUser.value || '').trim();
     var p = loginPass.value || '';
@@ -469,9 +455,7 @@ body::before{
     showLogin();
   });
 
-  /* ============================================================
-     DATA
-  ============================================================ */
+  /* ============ DATA ============ */
   var LS_KEY    = 'tgmvn_ff_admin_v1';
   var CLOUD_KEY = 'tgmvn_ff_cloud_v1';
   var CLOUD_API = 'https://jsonblob.com/api/jsonBlob';
@@ -522,13 +506,6 @@ body::before{
     toastTimer = setTimeout(function () { toastEl.className = 'toast'; }, 2800);
   }
 
-  function b64urlEncode(str) {
-    var bytes = new TextEncoder().encode(str);
-    var bin = '';
-    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
-
   function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
     return new Promise(function (resolve, reject) {
@@ -562,7 +539,6 @@ body::before{
     });
     return d;
   }
-
   function load() {
     try {
       var raw = localStorage.getItem(LS_KEY);
@@ -573,90 +549,110 @@ body::before{
     } catch (e) {}
     return normalize(clone(DEFAULT_STATE));
   }
-
   var state = load();
 
-  var saveTimer = null;
-  function save() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(function () {
-      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
-      markUnsynced();
-    }, 180);
-  }
+  /* ============ CLOUD SYNC ============ */
+  var syncState = 'idle'; // idle | pending | syncing | synced | error
+  var syncTimer = null;
+  var lastSync = null;
 
-  /* ============================================================
-     CLOUD SYNC
-  ============================================================ */
   function getCloud() {
     try { return JSON.parse(localStorage.getItem(CLOUD_KEY)) || null; } catch (e) { return null; }
   }
   function setCloud(info) {
     try { localStorage.setItem(CLOUD_KEY, JSON.stringify(info)); } catch (e) {}
   }
-  function markUnsynced() {
-    var btn = document.getElementById('btnCloud');
-    if (!btn) return;
-    btn.classList.remove('synced');
-    btn.textContent = '☁ Đồng bộ Cloud';
-  }
-  function markSynced() {
-    var btn = document.getElementById('btnCloud');
-    if (!btn) return;
-    btn.classList.add('synced');
-    btn.textContent = '✓ Đã đồng bộ';
+
+  function updateSyncLabel() {
+    var statusText = '';
+    if (syncState === 'syncing') statusText = ' • ⏳ Đang đồng bộ...';
+    else if (syncState === 'synced') statusText = ' • ✓ Đã đồng bộ';
+    else if (syncState === 'error') statusText = ' • ⚠ Lỗi đồng bộ';
+    else if (syncState === 'pending') statusText = ' • • Chờ...';
+    subDesc.textContent = 'Tự động thêm • ' + state.events.length + ' sự kiện' + statusText;
   }
 
-  function syncToCloud() {
+  // Thử phục hồi Cloud ID cũ từ cloud.json của User (khi mất localStorage)
+  function recoverCloudId() {
+    return fetch(USER_URL + 'cloud.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { return d && d.id ? d.id : null; })
+      .catch(function () { return null; });
+  }
+
+  function doSync() {
     return new Promise(function (resolve, reject) {
       var info = getCloud();
       var payload = JSON.stringify(state);
-      var btn = document.getElementById('btnCloud');
-      btn.disabled = true;
-      btn.textContent = '⏳ Đang đồng bộ...';
+      syncState = 'syncing';
+      updateSyncLabel();
 
-      var reqPromise;
-      if (info && info.id) {
-        reqPromise = fetch(CLOUD_API + '/' + info.id, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload
-        }).then(function (r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return { id: info.id, action: 'update' };
-        });
-      } else {
-        reqPromise = fetch(CLOUD_API, {
+      function send(id) {
+        if (id) {
+          return fetch(CLOUD_API + '/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return { id: id, action: 'update' };
+          });
+        }
+        return fetch(CLOUD_API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: payload
         }).then(function (r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           var loc = r.headers.get('Location') || r.headers.get('location');
-          if (!loc) throw new Error('Server không trả Location');
-          var id = loc.split('/').pop();
-          return { id: id, action: 'create' };
+          if (!loc) throw new Error('No Location header');
+          return { id: loc.split('/').pop(), action: 'create' };
         });
       }
 
-      reqPromise
-        .then(function (res) {
-          setCloud({ id: res.id, at: Date.now() });
-          btn.disabled = false;
-          markSynced();
-          resolve(res);
-        })
-        .catch(function (err) {
-          btn.disabled = false;
-          btn.textContent = '☁ Đồng bộ Cloud';
-          reject(err);
+      var promise;
+      if (info && info.id) {
+        promise = send(info.id);
+      } else {
+        // Chưa có ID → thử recover từ cloud.json
+        promise = recoverCloudId().then(function (recovered) {
+          if (recovered) {
+            setCloud({ id: recovered, at: Date.now() });
+            return send(recovered);
+          }
+          return send(null);
         });
+      }
+
+      promise.then(function (res) {
+        setCloud({ id: res.id, at: Date.now() });
+        lastSync = res;
+        syncState = 'synced';
+        updateSyncLabel();
+        resolve(res);
+      }).catch(function (err) {
+        syncState = 'error';
+        updateSyncLabel();
+        reject(err);
+      });
     });
   }
 
-  /* ============================================================
-     RENDER
-  ============================================================ */
+  function scheduleSync() {
+    syncState = 'pending';
+    updateSyncLabel();
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function () {
+      doSync().catch(function () {});
+    }, 2000);
+  }
+
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {}
+    scheduleSync();
+  }
+
+  /* ============ RENDER ============ */
   function urlField(field, label, value) {
     value = value || '';
     return '<div class="field">' +
@@ -705,12 +701,7 @@ body::before{
     state.events.forEach(function (ev, i) { html += cardHTML(ev, i); });
     html += '<button type="button" class="add-card" id="addCard"><span class="plus">+</span> TẠO DANH SÁCH SỰ KIỆN</button>';
     list.innerHTML = html;
-    updateDesc();
-    if (getCloud()) markSynced();
-  }
-
-  function updateDesc() {
-    subDesc.textContent = 'Tự động thêm • ' + state.events.length + ' sự kiện • Lưu tự động';
+    updateSyncLabel();
   }
 
   function setPreview(container, url) {
@@ -782,60 +773,7 @@ body::before{
 
   document.getElementById('btnAdd').addEventListener('click', addEvent);
 
-  document.getElementById('btnCopy').addEventListener('click', function () {
-    copyText(JSON.stringify(state, null, 2))
-      .then(function () { toast('Đã copy JSON'); })
-      .catch(function () { toast('Không copy được', 'error'); });
-  });
-
-  document.getElementById('btnExport').addEventListener('click', function () {
-    var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'data.json';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1200);
-    toast('Đã xuất data.json');
-  });
-
-  var fileInput = document.getElementById('fileInput');
-  document.getElementById('btnImport').addEventListener('click', function () { fileInput.click(); });
-  fileInput.addEventListener('change', function () {
-    var f = fileInput.files && fileInput.files[0];
-    if (!f) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      try {
-        var d = JSON.parse(reader.result);
-        if (!d || !Array.isArray(d.events)) throw new Error('bad');
-        state = normalize(d);
-        save(); render();
-        toast('Đã nhập ' + state.events.length + ' sự kiện');
-      } catch (err) { toast('File JSON không hợp lệ', 'error'); }
-    };
-    reader.readAsText(f);
-    fileInput.value = '';
-  });
-
-  document.getElementById('btnCloud').addEventListener('click', function () {
-    toast('Đang đồng bộ lên cloud...');
-    syncToCloud()
-      .then(function (res) {
-        var link = USER_URL + '?id=' + res.id;
-        showModal({
-          title: 'ĐỒNG BỘ CLOUD THÀNH CÔNG',
-          status: { text: '✓ Cloud ID: ' + res.id + ' • ' + (res.action === 'create' ? 'Tạo mới' : 'Cập nhật'), type: 'info' },
-          desc: 'Dữ liệu đã đẩy lên cloud. User sẽ tự động tải về khi vào link bên dưới.<br><br>' +
-                '<b>Để User tự cập nhật từ link gốc:</b> tạo file <code>cloud.json</code> trên repo User với nội dung:<br>' +
-                '<code>{"id":"' + res.id + '"}</code>',
-          link: link
-        });
-        toast('✓ Đồng bộ Cloud thành công', 'success');
-      })
-      .catch(function (err) {
-        toast('✗ Lỗi đồng bộ: ' + err.message, 'error');
-      });
-  });
-
+  /* ============ MODAL ============ */
   var modal       = document.getElementById('modal');
   var modalTitle  = document.getElementById('modalTitle');
   var modalDesc   = document.getElementById('modalDesc');
@@ -856,53 +794,53 @@ body::before{
     modal.classList.add('show');
   }
 
+  function buildLinkList() {
+    var lines = [];
+    state.events.forEach(function (ev, i) {
+      var n = i + 1;
+      lines.push((ev.name || ('Sự kiện ' + n)) + ':');
+      lines.push(USER_URL + '?d=event' + n);
+      lines.push('');
+    });
+    return lines.join('\n').trim();
+  }
+
   document.getElementById('btnLink').addEventListener('click', function () {
-    syncToCloud()
-      .then(function (res) {
-        var cloudLink = USER_URL + '?id=' + res.id;
-        var embedLink = USER_URL + '?d=' + b64urlEncode(JSON.stringify(state));
-        showModal({
-          title: 'LINK USER',
-          status: { text: '✓ Đã đồng bộ cloud • ID: ' + res.id, type: 'info' },
-          desc: '<b>Link Cloud (khuyến nghị, tự cập nhật):</b><br>' +
-                '<code>' + cloudLink + '</code><br><br>' +
-                '<b>Link Embed (dự phòng, cố định):</b> bên dưới dòng thứ 2',
-          link: cloudLink + '\n\n' + embedLink
-        });
-      })
-      .catch(function (err) {
-        var embedLink = USER_URL + '?d=' + b64urlEncode(JSON.stringify(state));
-        showModal({
-          title: 'LINK USER (EMBED)',
-          status: { text: '⚠ Không sync cloud: ' + err.message + ' — dùng link embed', type: 'error' },
-          desc: 'Link embed chứa dữ liệu trực tiếp:',
-          link: embedLink
-        });
+    toast('Đang đồng bộ...');
+    doSync().then(function (res) {
+      showModal({
+        title: 'LINK USER',
+        status: { text: '✓ Đồng bộ cloud thành công • Cloud ID: ' + res.id, type: 'info' },
+        desc: 'Link đã sẵn sàng. Gửi từng link bên dưới cho User tương ứng.<br><br>' +
+              '<b>Lần đầu cài đặt:</b> tạo file <code>cloud.json</code> trên repo User (azerst-freefire) với nội dung:<br>' +
+              '<code>{"id":"' + res.id + '"}</code>',
+        link: buildLinkList()
       });
+      toast('✓ Đã tạo link', 'success');
+    }).catch(function (err) {
+      showModal({
+        title: 'LINK USER (CHƯA SYNC)',
+        status: { text: '⚠ Lỗi: ' + err.message, type: 'error' },
+        desc: 'Chưa đồng bộ được lên cloud. User sẽ thấy dữ liệu mặc định cho tới khi đồng bộ thành công. Thử lại sau.',
+        link: buildLinkList()
+      });
+      toast('✗ Lỗi đồng bộ: ' + err.message, 'error');
+    });
   });
 
   document.getElementById('btnPreview').addEventListener('click', function () {
-    var info = getCloud();
-    if (info && info.id) {
-      window.open(USER_URL + '?id=' + info.id, '_blank');
-    } else {
-      window.open(USER_URL + '?d=' + b64urlEncode(JSON.stringify(state)), '_blank');
-    }
+    window.open(USER_URL + '?d=event1&debug=1', '_blank');
   });
 
   document.getElementById('copyLink').addEventListener('click', function () {
-    var text = linkOut.value;
-    if (!text) return;
-    var first = text.split('\n')[0];
-    copyText(first)
-      .then(function () { toast('Đã copy link', 'success'); })
+    if (!linkOut.value) return;
+    copyText(linkOut.value)
+      .then(function () { toast('Đã copy tất cả link', 'success'); })
       .catch(function () { linkOut.select(); toast('Hãy nhấn Ctrl+C', 'error'); });
   });
 
   document.getElementById('openLink').addEventListener('click', function () {
-    if (!linkOut.value) return;
-    var first = linkOut.value.split('\n')[0];
-    window.open(first, '_blank');
+    window.open(USER_URL + '?d=event1', '_blank');
   });
 
   document.getElementById('closeModal').addEventListener('click', function () {
@@ -919,11 +857,16 @@ body::before{
     toast('Đã đặt lại dữ liệu');
   });
 
+  /* ============ BOOT ============ */
   var booted = false;
   window.__adminBoot = function () {
     if (booted) return;
     booted = true;
     render();
+    // Đồng bộ lần đầu sau khi vào panel
+    if (!getCloud() || !getCloud().id) {
+      scheduleSync();
+    }
   };
 
   var hasSession = false;
@@ -940,4 +883,4 @@ body::before{
 })();
 </script>
 </body>
-      </html>
+</html>
